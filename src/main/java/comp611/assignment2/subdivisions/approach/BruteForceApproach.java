@@ -8,10 +8,17 @@ public class BruteForceApproach extends Approach<Double, Subdivision> {
 
     private int subdivisions = 0;
 
+    // Calling the constructor of the super class, Approach.
     public BruteForceApproach(Land land) {
         super(land, "Brute Force Approach");
     }
 
+    /**
+     * The function `solve()` is called by the `main()` function in the `Main` class. It starts the timer, calls the
+     * `findSub()` function, stops the timer, prints the number of subdivisions, and returns 0.0
+     *
+     * @return The return type is Double, but the method returns 0.0.
+     */
     @Override
     public Double solve() {
         startTimer();
@@ -22,6 +29,7 @@ public class BruteForceApproach extends Approach<Double, Subdivision> {
     }
 
     @Override
+    // Finding the best subdivision for the given area.
     public Subdivision findBest(Area area) {
         if(area != null) {
             double best = 0.0d;
@@ -40,6 +48,12 @@ public class BruteForceApproach extends Approach<Double, Subdivision> {
         return null;
     }
 
+    /**
+     * If the area can be subdivided, then for each possible subdivision, subdivide the area, find the subdivisions of the
+     * two new areas, and then unsubsidize the area
+     *
+     * @param area The area to be subdivided
+     */
     private void findSub(Area area) {
         if (area != null) {
             if (area.canSubdivide()) {
@@ -62,4 +76,8 @@ public class BruteForceApproach extends Approach<Double, Subdivision> {
             }
         }
     }
+
+    //
+
+
 }
