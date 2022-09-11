@@ -5,7 +5,7 @@ import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
 @SuppressWarnings("unused")
-public abstract class Approach<E, S> {
+public abstract class Approach<E,F> {
 
     private final String name;
     private final Land land;
@@ -20,6 +20,8 @@ public abstract class Approach<E, S> {
     }
 
     public abstract E solve();
+
+    public abstract F findBest(Area area);
 
     public Land getLand() {
         return land;

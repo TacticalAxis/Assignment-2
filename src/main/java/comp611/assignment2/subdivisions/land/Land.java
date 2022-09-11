@@ -8,7 +8,7 @@ public class Land {
 
     public Land(int width, int height, int subValue, double minValue, double maxValue) {
         this.landValue = new LandValue(width, height, minValue, maxValue);
-        this.area = new Area(this, width, height, 0, 0, landValue.getValue(width, height));
+        this.area = new Area(this, width, height, 0, 0);
         this.subValue = subValue;
     }
 
@@ -29,7 +29,7 @@ public class Land {
     }
 
     public int[][] getAreaArray() {
-        return area.toAreaArray(0, new int[area.getHeight()][area.getWidth()]);
+        return area.toArray();
     }
 
     public void printArea() {
@@ -56,20 +56,38 @@ public class Land {
         a.subdivide(new Subdivision(a, direction, x, y));
     }
 
+    @Override
+    public String toString() {
+        return area.toString();
+    }
+
     public static void main(String[] args) {
+        // setup land
         Land land = new Land(6, 3, 50, 20, 1000);
         System.out.println("Total land price: " + land.getValue());
 
-        land.subdivide(Direction.VERTICAL, 2, 2);
-
+        // show before
+        System.out.println("before");
         land.printArea();
-        System.out.println();
-        System.out.println(land.landValue);
 
+        // get possible subdivisions
         for (Subdivision subdivision : land.getArea().getPossibleSubdivisions()) {
             System.out.println(subdivision);
         }
 
+        // subdivide
+        land.subdivide(Direction.VERTICAL, 2, 2);
+        land.subdivide(Direction.VERTICAL, 4, 2);
+
+        // show after
+        System.out.println("\nall area");
+        System.out.println(land.getArea());
+        System.out.println("area 1");
+        System.out.println(land.getArea().getArea1());
+        System.out.println("area 2");
+        System.out.println(land.getArea().getArea2());
+
+        // show total value
         System.out.println("Total land price: " + land.getValue());
     }
 }
