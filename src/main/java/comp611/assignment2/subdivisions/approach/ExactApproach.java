@@ -1,4 +1,4 @@
-package comp611.assignment2.subdivisions;
+package comp611.assignment2.subdivisions.approach;
 
 public class ExactApproach {
     int [][] area;

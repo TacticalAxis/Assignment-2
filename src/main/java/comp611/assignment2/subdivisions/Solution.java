@@ -1,11 +1,21 @@
 package comp611.assignment2.subdivisions;
 
-public class Main {
+public class Solution {
+
     public static void main(String[] args) {
-        System.out.println(bruteForce(6,3));
+        // setup timing things
+
+        // bruteForce
+
+        // greedy
+
+        // exact
+
+        // update gui to show results
     }
 
     public static float bruteForce(int m, int n) {
+        // TODO: this is a stub
         return (m - 1) + ((float) n - 1);
     }
 }

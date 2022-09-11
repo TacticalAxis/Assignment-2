@@ -1,11 +1,11 @@
-package comp611.assignment2.subdivisions;
-
-import java.util.Scanner;
+package comp611.assignment2.subdivisions.approach;
 
 public class BruteForceApproach {
+
+
+
     int [][] area;
     int x,y;
-
 
     public BruteForceApproach(int x, int y) {
         this.x = x;
