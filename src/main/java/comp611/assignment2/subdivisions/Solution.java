@@ -14,6 +14,7 @@ public class Solution {
         double solution = bruteForceApproach.solve();
         System.out.println("Brute Force Solution: " + solution);
         System.out.println("This took " + bruteForceApproach.getTime() + "ms");
+        System.out.println(bruteForceApproach.getLand());
         bruteForceApproach.stopTimer();
 
         // greedy

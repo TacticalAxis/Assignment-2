@@ -1,15 +1,19 @@
 package comp611.assignment2.subdivisions.land;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "ManualArrayCopy"})
 public class Area {
+    // the land this area belongs to
     private final Land land;
 
+    // the area's width and height
     public final int width;
     public final int height;
+
+    // the coordinates of the top left corner of the area
     private final int xCoordinate;
     private final int yCoordinate;
 
@@ -18,18 +22,18 @@ public class Area {
     private Area area2;
     private Subdivision subdivision;
 
-    // area value
-    private final double value;
-
-    public Area(Land land, int width, int height, int xCoordinate, int yCoordinate, double value) {
+    public Area(Land land, int width, int height, int xCoordinate, int yCoordinate) {
         this.land = land;
+
         this.width = width;
         this.height = height;
+
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
+
         this.area1 = null;
         this.area2 = null;
-        this.value = value;
+        this.subdivision = null;
     }
 
     public Land getLand() {
@@ -48,7 +52,7 @@ public class Area {
         if (isSubdivided()) {
             return area1.getValue() + area2.getValue() - (subdivision.getLength() * land.getSubValue());
         } else {
-            return value;
+            return land.getLandValue().getValue(width, height);
         }
     }
 
@@ -88,24 +92,43 @@ public class Area {
         return subdivisions;
     }
 
-    public int[][] toAreaArray(int subIndex, int[][] areaArray) {
-        if (areaArray == null) {
-            areaArray = new int[height][width];
-        }
+    public int[][] toArray() {
+        int[][] array = new int[height][width];
 
         if (isSubdivided()) {
-            area1.toAreaArray(subIndex + 1, areaArray);
-            area2.toAreaArray(subIndex + 2, areaArray);
-        } else {
-            for (int i = yCoordinate; i < yCoordinate + height; i++) {
-                for (int j = xCoordinate; j < xCoordinate + width; j++) {
-//                        areaArray[i][j] = subIndex;
-                    areaArray[i][j] = this.hashCode();
+            int[][] area1Array = area1.toArray();
+            int[][] area2Array = area2.toArray();
+
+            if(subdivision.getDirection() == Direction.VERTICAL) {
+                for (int i = 0; i < area1Array.length; i++) {
+                    for (int j = 0; j < area1Array[i].length; j++) {
+                        array[i][j] = area1Array[i][j];
+                    }
                 }
+                for (int i = 0; i < area2Array.length; i++) {
+                    for (int j = 0; j < area2Array[i].length; j++) {
+                        array[i][j + area1Array[i].length] = area2Array[i][j];
+                    }
+                }
+            } else {
+                for (int i = 0; i < area1Array.length; i++) {
+                    for (int j = 0; j < area1Array[i].length; j++) {
+                        array[i][j] = area1Array[i][j];
+                    }
+                }
+                for (int i = 0; i < area2Array.length; i++) {
+                    for (int j = 0; j < area2Array[i].length; j++) {
+                        array[i + area1Array.length][j] = area2Array[i][j];
+                    }
+                }
+            }
+        } else {
+            for (int[] ints : array) {
+                Arrays.fill(ints, this.hashCode());
             }
         }
 
-        return areaArray;
+        return array;
     }
 
     public void subdivide(Subdivision subdivision) {
@@ -116,7 +139,8 @@ public class Area {
         }
 
         if (isSubdivided()) {
-            throw new IllegalStateException("Area is already subdivided");
+            return;
+//            throw new IllegalStateException("Area is already subdivided");
         }
 
         if (subdivision.getDirection() == Direction.VERTICAL) {
@@ -133,12 +157,8 @@ public class Area {
                 return;
             }
 
-            double value1 = getLand().getLandValue().getValue(width1, height);
-            double value2 = getLand().getLandValue().getValue(width2, height);
-
-            area1 = new Area(land, width1, height, xCoordinate, yCoordinate, value1);
-            area2 = new Area(land, width2, height, subdivision.getX(), yCoordinate, value2);
-
+            area1 = new Area(land, width1, height, xCoordinate, yCoordinate);
+            area2 = new Area(land, width2, height, subdivision.getX(), yCoordinate);
         } else {
             if (subdivision.getY() < yCoordinate || subdivision.getY() >= yCoordinate + height) {
                 throw new IllegalArgumentException("y must be within the area");
@@ -152,11 +172,8 @@ public class Area {
                 return;
             }
 
-            double value1 = getLand().getLandValue().getValue(width, height1);
-            double value2 = getLand().getLandValue().getValue(width, height2);
-
-            area1 = new Area(land, width, height1, xCoordinate, yCoordinate, value1);
-            area2 = new Area(land, width, height2, xCoordinate, subdivision.getY(), value2);
+            area1 = new Area(land, width, height1, xCoordinate, yCoordinate);
+            area2 = new Area(land, width, height2, xCoordinate, subdivision.getY());
         }
 
         this.subdivision = subdivision;
@@ -184,31 +201,19 @@ public class Area {
         }
     }
 
-    private int[][] toAreaArray() {
-        Random random = new Random();
-        int num = random.nextInt(9);
-        int[][] areaArray = new int[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                areaArray[i][j] = num;
-            }
-        }
-        return areaArray;
-    }
-
     @Override
     public String toString() {
+        int[][] array = toArray();
         StringBuilder sb = new StringBuilder();
-        sb.append("Area: ").append(xCoordinate).append(", ").append(yCoordinate).append(" - ").append(width).append("x").append(height).append("\n");
-        int[][] areaArray = toAreaArray();
-        for (int[] ints : areaArray) {
+        for (int[] ints : array) {
             for (int anInt : ints) {
-                sb.append(anInt).append(" ");
+                sb.append(anInt);
+                sb.append(" ");
             }
             sb.append("\n");
         }
 
-        return sb.toString().trim();
+        return sb.toString();
     }
 
     public int getHeight() {

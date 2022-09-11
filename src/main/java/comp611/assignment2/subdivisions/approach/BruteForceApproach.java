@@ -4,7 +4,7 @@ import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
-public class BruteForceApproach extends Approach<Double> {
+public class BruteForceApproach extends Approach<Double, Subdivision> {
 
     private int subdivisions = 0;
 
@@ -21,6 +21,25 @@ public class BruteForceApproach extends Approach<Double> {
         return 0.0;
     }
 
+    @Override
+    public Subdivision findBest(Area area) {
+        if(area != null) {
+            double best = 0.0d;
+            Subdivision bestSub = null;
+            for(Subdivision sub : area.getPossibleSubdivisions()) {
+                area.subdivide(sub);
+                if(area.getValue() > best) {
+                    best = area.getValue();
+                    bestSub = sub;
+                }
+                area.unSubdivide();
+            }
+
+            return bestSub;
+        }
+        return null;
+    }
+
     private void findSub(Area area) {
         if (area != null) {
             if (area.canSubdivide()) {
@@ -28,8 +47,17 @@ public class BruteForceApproach extends Approach<Double> {
                     area.subdivide(subdivision);
                     findSub(area.getArea1());
                     findSub(area.getArea2());
-                    area.unSubdivide();
+//                    area.unSubdivide();
                     subdivisions++;
+                }
+
+                if(!area.isSubdivided()) {
+                    Subdivision bestSub = findBest(area);
+                    if(bestSub != null) {
+                        System.out.println("Currently subdividing:\n" + area);
+                        area.subdivide(bestSub);
+                        System.out.println("After Subdivided:\n" + area);
+                    }
                 }
             }
         }
