@@ -1,11 +1,13 @@
 package comp611.assignment2.subdivisions.approach;
 
-public class ExactApproach {
+@SuppressWarnings("unused")
+public class ExactOldApproach {
     int [][] area;
-    int x,y;
+    int x;
+    int y;
     int subDivisions = 0;
 
-    public ExactApproach(int x, int y) {
+    public ExactOldApproach(int x, int y) {
         this.x = x;
         this.y = y;
         area = new int[x][y];

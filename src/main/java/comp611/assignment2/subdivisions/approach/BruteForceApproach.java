@@ -1,85 +1,37 @@
 package comp611.assignment2.subdivisions.approach;
 
-public class BruteForceApproach {
+import comp611.assignment2.subdivisions.land.Area;
+import comp611.assignment2.subdivisions.land.Land;
+import comp611.assignment2.subdivisions.land.Subdivision;
 
+public class BruteForceApproach extends Approach<Double> {
 
+    private int subdivisions = 0;
 
-    int [][] area;
-    int x,y;
-
-    public BruteForceApproach(int x, int y) {
-        this.x = x;
-        this.y = y;
-        area = new int[y][x];
+    public BruteForceApproach(Land land) {
+        super(land, "Brute Force Approach");
     }
 
+    @Override
+    public Double solve() {
+        startTimer();
+        findSub(getLand().getArea());
+        stopTimer();
+        System.out.println("Subdivisions: " + subdivisions);
+        return 0.0;
+    }
 
-    //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    //print 2d array and fill it with
-//    public void printArea() {
-//        for (int i = 0; i < y; i++) {
-//            for (int j = 0; j < x; j++) {
-//                System.out.print(area[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-//    }
-//
-//
-//    public void createSubDivisions() {
-//
-//
-//    }
-//
-//    private void fillArea(int x1,int y1,int x2,int y2,char fill) {
-//        for (int i = x1; i < x2; i++) {
-//            for (int j = y1; j < y2; j++) {
-//                area[i][j] = fill;
-//            }
-//        }
-//    }
-//
-//
-//
-//
-//    public static void main(String[] args) {
-//        BruteForceApproach bruteForceApproach = new BruteForceApproach(6,3);
-//        bruteForceApproach.createSubDivisions();
-//        bruteForceApproach.printArea();
-//    }
-
-
-
-
-
-
-
+    private void findSub(Area area) {
+        if (area != null) {
+            if (area.canSubdivide()) {
+                for (Subdivision subdivision : area.getPossibleSubdivisions()) {
+                    area.subdivide(subdivision);
+                    findSub(area.getArea1());
+                    findSub(area.getArea2());
+                    area.unSubdivide();
+                    subdivisions++;
+                }
+            }
+        }
+    }
 }

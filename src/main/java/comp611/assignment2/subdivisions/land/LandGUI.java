@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Random;
 
 public class LandGUI extends JPanel implements ActionListener {
 
@@ -20,12 +19,16 @@ public class LandGUI extends JPanel implements ActionListener {
     private final int pixelWidth;
 
     // constructor
-    public LandGUI(Land land) {
+    public LandGUI(Land land, JFrame frame) {
         super(new BorderLayout());
 
         this.land = land;
 
-        this.pixelWidth = 20;
+        this.pixelWidth = 60;
+
+        // get reference to outside frame
+//        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        System.out.println(frame.getTitle());
 
         // setup draw panel
         drawPanel = new DrawPanel(pixelWidth);
@@ -33,6 +36,7 @@ public class LandGUI extends JPanel implements ActionListener {
             @Override
             public void mouseEntered(MouseEvent me) {
                 // print out coordinates
+                frame.setTitle("LandGUI");
                 int x = me.getX() / pixelWidth;
                 int y = me.getY() / pixelWidth;
                 textArea.setText("x=" + x + ", y=" + y);
@@ -43,6 +47,7 @@ public class LandGUI extends JPanel implements ActionListener {
             @Override
             public void mouseExited(MouseEvent me) {
                 // clear text area
+                frame.setTitle("LandGUI");
                 textArea.setText("Hover over an area to see it's land value!");
             }
         });
@@ -53,8 +58,9 @@ public class LandGUI extends JPanel implements ActionListener {
                 // print out coordinates
                 int x = me.getX() / pixelWidth;
                 int y = me.getY() / pixelWidth;
-                Land.Area a = land.getArea().findAreaWithCoordinates(x, y);
+                Area a = land.getArea().findAreaWithCoordinates(x, y);
                 if (a != null) {
+                    frame.setTitle("LandGUI: Land value: " + land.getValue());
                     textArea.setText("x=" + x + ", y=" + y + ", value=$" + a.getValue() + ", width=" + a.getWidth() + ", height=" + a.getHeight() + ", area=" + (a.getWidth() * a.getHeight()));
                 } else {
                     textArea.setText("x=" + x + ", y=" + y);
@@ -64,7 +70,6 @@ public class LandGUI extends JPanel implements ActionListener {
 
         // setup panel
         JPanel panel = new JPanel(new GridLayout(1, 1));
-        // add a jtextarea to the panel
         textArea = new JTextArea("This is a text area");
         textArea.setEditable(false);
         textArea.setForeground(Color.BLACK);
@@ -135,23 +140,16 @@ public class LandGUI extends JPanel implements ActionListener {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Land land = new Land(40, 40, 0, 20, 900);
-        System.out.println("Total land price: " + land.getValue());
+        Land land = new Land(6, 3, 50, 20, 1000);
+        land.subdivide(Direction.HORIZONTAL, 5, 2);
 
-        Random random = new Random();
-//        int numRandomSubdivisions = random.nextInt(10) + 1;
-        for (int i = 0; i < 4; i++) {
-            // random height value
-            int height = random.nextInt(land.getArea().height - 1) + 1;
-            // random width value
-            int width = random.nextInt(land.getArea().width - 1) + 1;
-            // random direction value
-            Land.Direction direction = random.nextInt(2) == 0 ? Land.Direction.HORIZONTAL : Land.Direction.VERTICAL;
-            // subdivide
-            land.subdivide(direction, width, height);
+        for (Subdivision subdivision : land.getArea().getPossibleSubdivisions()) {
+            System.out.println(subdivision);
         }
 
-        frame.getContentPane().add(new LandGUI(land));
+        System.out.println("Total land price: " + land.getValue());
+
+        frame.getContentPane().add(new LandGUI(land, frame));
         frame.pack();
 
         frame.setLocationRelativeTo(null);
