@@ -4,6 +4,7 @@ import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,10 +36,15 @@ public class BruteForceApproach extends Approach {
             getLand().setArea(permutations.getSolution());
         }
 
+        System.out.println("Subdivisions Found: " + subdivisions);
+        System.out.println("Unique Combinations: " + permutations.size());
+        System.out.println("Solution:\n" + permutations.getSolution());
+//        System.out.println("Solution Value: " + permutations.getSolution().getValue());
+
         // stop timer
         stopTimer();
 
-        return new Result(this, permutations.getBestValue());
+        return new Result(this, permutations.getBestValue(), subdivisions);
 
         // return the best value
 //        System.out.println("Subdivisions: " + subdivisions);
@@ -80,11 +86,12 @@ public class BruteForceApproach extends Approach {
 
     private static class LayoutSet {
         private final HashMap<List<Integer>, Double> values;
-        private Area bestArea;
+        private final List<Area> areas;
+//        private Area bestArea;
 
         public LayoutSet() {
             values = new HashMap<>();
-            this.bestArea = null;
+            areas = new ArrayList<>();
         }
 
         public int size() {
@@ -92,19 +99,22 @@ public class BruteForceApproach extends Approach {
         }
 
         private void add(List<Integer> list, double value, Area area) {
-            // check if a list with the exact same values in the same order exists
-            if(values.containsKey(list)) {
-                // if it does, check if the value is better
-                if(values.get(list) < value) {
-                    // if it is, replace the value
-                    values.put(list, value);
-                    bestArea = area;
-                }
-            } else {
-                // if it doesn't, add it
+            if(!values.containsKey(list)) {
                 values.put(list, value);
-                bestArea = area;
+                areas.add(area);
             }
+//            // check if a list with the exact same values in the same order exists
+//            if(values.containsKey(list)) {
+//                // if it does, check if the value is better
+//                if(values.get(list) < value) {
+//                    // if it is, replace the value
+//                    values.put(list, value);
+//                    areas.set(areas.indexOf(area), area);
+//                }
+//            } else {
+//                // if it doesn't, add it
+//                values.put(list, value);
+//            }
         }
 
         private double getBestValue() {
@@ -119,7 +129,20 @@ public class BruteForceApproach extends Approach {
         }
 
         private Area getSolution() {
-            return bestArea;
+            if(areas.isEmpty()) {
+                return null;
+            }
+
+            int indexOfBest = 0;
+            double best = 0.0d;
+            for (int i = 0; i < areas.size(); i++) {
+                if (areas.get(i).getValue() > best) {
+                    best = areas.get(i).getValue();
+                    indexOfBest = i;
+                }
+            }
+
+            return areas.get(indexOfBest);
         }
     }
 
@@ -128,10 +151,10 @@ public class BruteForceApproach extends Approach {
         BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 3, 50, 20,1000));
         bruteForceApproach.startTimer();
         Result solution = bruteForceApproach.solve();
-        System.out.println("Brute Force Solution Value: " + solution.getValue());
-        System.out.println("Brute Force Solution Time: " + solution.getTime());
-        System.out.println("This took " + bruteForceApproach.getTime() + "ms");
-        System.out.println(bruteForceApproach.getLand());
+//        System.out.println("Brute Force Solution Value: " + solution.getValue());
+//        System.out.println("Brute Force Solution Time: " + solution.getTime());
+//        System.out.println("This took " + bruteForceApproach.getTime() + "ms");
+//        System.out.println(bruteForceApproach.getLand());
         bruteForceApproach.stopTimer();
     }
 }

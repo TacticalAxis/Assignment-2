@@ -149,19 +149,8 @@ public class LandGUI extends JPanel implements ActionListener {
         System.out.println(bruteForceApproach.getLand());
         bruteForceApproach.stopTimer();
 
-
         JFrame frame = new JFrame("Land GUI");
-
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-//        Land land = new Land(6, 3, 50, 20, 1000);
-//        land.subdivide(Direction.HORIZONTAL, 5, 2);
-
-//        for (Subdivision subdivision : bruteForceApproach.getLand().getArea().getPossibleSubdivisions()) {
-//            System.out.println(subdivision);
-//        }
-
-//        System.out.println("Total land price: " + land.getValue());
 
         frame.getContentPane().add(new LandGUI(bruteForceApproach.getLand(), frame));
         frame.pack();

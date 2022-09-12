@@ -75,10 +75,16 @@ public abstract class Approach {
     public static class Result {
         private final Approach approach;
         private final double value;
+        private final int subdivisions;
 
-        public Result(Approach approach, double value) {
+        public Result(Approach approach, double value, int subdivisions) {
             this.approach = approach;
             this.value = value;
+            this.subdivisions = subdivisions;
+        }
+
+        public int getSubdivisions() {
+            return subdivisions;
         }
 
         public Approach getApproach() {
