@@ -2,7 +2,6 @@ package comp611.assignment2.subdivisions.approach;
 
 import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
-import comp611.assignment2.subdivisions.land.Subdivision;
 
 @SuppressWarnings("unused")
 public abstract class Approach<E,F> {
@@ -58,8 +57,6 @@ public abstract class Approach<E,F> {
     public String toString() {
         return name + ": hash{" + this.hashCode() + "}";
     }
-
-    public abstract Subdivision findBest(Area area);
 
     public static class ApproachTimer {
         private long startTime;
