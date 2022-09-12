@@ -110,6 +110,41 @@ public class BruteForceApproach extends Approach<Double, Subdivision> {
 //        }
 //    }
 
+    public double calculateValue(Area area) {
+        if(area != null) {
+            if(area.canSubdivide()) {
+                for(Subdivision subdivision : area.getPossibleSubdivisions()) {
+                    area.subdivide(subdivision);
+                    calculateValue(area.getArea1());
+                    calculateValue(area.getArea2());
+                    area.unSubdivide();
+                    System.out.println("Area value: " + area.getValue());
+                }
+            }
+            else {
+                return area.getValue();
+            }
+        }
+        return 0.0;
+    }
+
+    public int calculateSubdivisions(Area area) {
+        if(area != null) {
+            if(area.canSubdivide()) {
+                for(Subdivision subdivision : area.getPossibleSubdivisions()) {
+                    area.subdivide(subdivision);
+                    calculateSubdivisions(area.getArea1());
+                    calculateSubdivisions(area.getArea2());
+                    area.unSubdivide();
+                }
+            }
+            else {
+                return subdivisions++;
+            }
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
         Solution.main(args);
     }
