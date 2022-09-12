@@ -58,7 +58,6 @@ public class LandValue {
     }
 
     public double getValue(int width, int height) {
-//        System.out.println("Getting value for " + width + " " + height + ": " + values[height - 1][width - 1]);
         return values[height - 1][width - 1];
     }
 
