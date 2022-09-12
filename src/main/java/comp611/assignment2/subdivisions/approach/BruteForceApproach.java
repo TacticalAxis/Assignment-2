@@ -28,7 +28,7 @@ public class BruteForceApproach extends Approach<Double> {
         return 0.0;
     }
 
-    
+
     @Override
     // Finding the best subdivision for the given area.
     public Subdivision findBest(Area area) {
@@ -64,6 +64,15 @@ public class BruteForceApproach extends Approach<Double> {
                     findSub(area.getArea2());
                     area.unSubdivide();
                     subdivisions++;
+                }
+
+                if(!area.isSubdivided()) {
+                    Subdivision bestSub = findBest(area);
+                    if(bestSub != null) {
+                        System.out.println("Currently subdividing:\n" + area);
+                        area.subdivide(bestSub);
+                        System.out.println("After Subdivided:\n" + area);
+                    }
                 }
             }
         }
