@@ -42,4 +42,12 @@ public class Subdivision {
                 ", length=" + getLength() +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Subdivision that = (Subdivision) o;
+        return x == that.x && y == that.y && direction == that.direction && getLength() == that.getLength();
+    }
 }

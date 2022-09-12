@@ -1,5 +1,6 @@
 package comp611.assignment2.subdivisions;
 
+import comp611.assignment2.subdivisions.approach.Approach;
 import comp611.assignment2.subdivisions.approach.BruteForceApproach;
 import comp611.assignment2.subdivisions.approach.ExactApproach;
 import comp611.assignment2.subdivisions.land.Land;
@@ -12,7 +13,7 @@ public class Solution {
         // bruteForce
         BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 3, 50, 20,1000));
         bruteForceApproach.startTimer();
-        double solution = bruteForceApproach.solve();
+        Approach.Result solution = bruteForceApproach.solve();
         System.out.println("Brute Force Solution: " + solution);
         System.out.println("This took " + bruteForceApproach.getTime() + "ms");
         System.out.println(bruteForceApproach.getLand());

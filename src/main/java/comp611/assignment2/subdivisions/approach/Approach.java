@@ -1,10 +1,9 @@
 package comp611.assignment2.subdivisions.approach;
 
-import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
 
 @SuppressWarnings("unused")
-public abstract class Approach<E,F> {
+public abstract class Approach {
 
     private final String name;
     private final Land land;
@@ -18,9 +17,7 @@ public abstract class Approach<E,F> {
         this.name = name;
     }
 
-    public abstract E solve();
-
-    public abstract F findBest(Area area);
+    public abstract Result solve();
 
     public Land getLand() {
         return land;
@@ -46,7 +43,7 @@ public abstract class Approach<E,F> {
         timer.stop();
     }
 
-    public float getTime() {
+    public long getTime() {
         return timer.getTime();
     }
 
@@ -72,6 +69,28 @@ public abstract class Approach<E,F> {
 
         public long getTime() {
             return (endTime - startTime) / 1000000;
+        }
+    }
+
+    public static class Result {
+        private final Approach approach;
+        private final double value;
+
+        public Result(Approach approach, double value) {
+            this.approach = approach;
+            this.value = value;
+        }
+
+        public Approach getApproach() {
+            return approach;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public long getTime() {
+            return approach.getTime();
         }
     }
 }

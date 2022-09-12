@@ -5,7 +5,7 @@ import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
 @SuppressWarnings("unused")
-public class ExactApproach extends Approach<Double, Subdivision> {
+public class ExactApproach extends Approach {
 
     private int subdivisions = 0;
 
@@ -15,12 +15,13 @@ public class ExactApproach extends Approach<Double, Subdivision> {
 
 
     @Override
-    public Double solve() {
+    public Result solve() {
         startTimer();
         findSub(getLand().getArea());
         stopTimer();
         System.out.println("Subdivisions: " + subdivisions);
-        return getLand().getValue();
+//        return getLand().getValue();
+        return null;
     }
 
     // this is a recursive function that finds the optimal subdivision of the land
@@ -42,7 +43,6 @@ public class ExactApproach extends Approach<Double, Subdivision> {
         }
     }
 
-    @Override
     public Subdivision findBest(Area area) {
         if(area != null) {
             double best = 0.0d;

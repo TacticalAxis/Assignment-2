@@ -5,14 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SubdivisionPath {
-
     private final List<SubdivisionCombo> combinations;
 
     public SubdivisionPath() {
         this.combinations = new ArrayList<>();
     }
 
-    public void add(Subdivision subdivision, AreaSelector selector) {
+    public void add(Subdivision subdivision, Area a1, Area a2, Area selected) {
+        AreaSelector selector;
+        if (selected == a1) {
+            selector = AreaSelector.AREA_1;
+        } else if (selected == a2) {
+            selector = AreaSelector.AREA_2;
+        } else {
+            throw new IllegalArgumentException("Selected area is invalid!");
+        }
         combinations.add(new SubdivisionCombo(subdivision, selector));
     }
 

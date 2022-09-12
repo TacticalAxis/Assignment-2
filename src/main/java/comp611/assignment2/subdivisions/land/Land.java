@@ -2,7 +2,7 @@ package comp611.assignment2.subdivisions.land;
 
 public class Land {
 
-    private final Area area;
+    private Area area;
     private final double subValue;
     private final LandValue landValue;
 
@@ -20,6 +20,10 @@ public class Land {
         return subValue;
     }
 
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
     public double getValue() {
         return area.getValue();
     }
@@ -30,6 +34,10 @@ public class Land {
 
     public int[][] getAreaArray() {
         return area.toArray();
+    }
+
+    public void resetHard() {
+        area.unSubdivide();
     }
 
     public void printArea() {
@@ -63,31 +71,46 @@ public class Land {
 
     public static void main(String[] args) {
         // setup land
+        System.out.println("Land 1");
         Land land = new Land(6, 3, 50, 20, 1000);
-        System.out.println("Total land price: " + land.getValue());
+        System.out.println(land.getArea());
 
-        // show before
-        System.out.println("before");
-        land.printArea();
+        System.out.println("Land 2");
+        Land land2 = new Land(6, 3, 50, 20, 1000);
+        System.out.println(land2.getArea());
 
-        // get possible subdivisions
-        for (Subdivision subdivision : land.getArea().getPossibleSubdivisions()) {
-            System.out.println(subdivision);
-        }
-
-        // subdivide
+        System.out.println("Subdividing Land 1");
         land.subdivide(Direction.VERTICAL, 2, 2);
         land.subdivide(Direction.VERTICAL, 4, 2);
 
-        // show after
-        System.out.println("\nall area");
-        System.out.println(land.getArea());
-        System.out.println("area 1");
-        System.out.println(land.getArea().getArea1());
-        System.out.println("area 2");
-        System.out.println(land.getArea().getArea2());
+        System.out.println("Subdividing Land 2");
+        land2.subdivide(Direction.VERTICAL, 2, 2);
+        land2.subdivide(Direction.VERTICAL, 4, 2);
 
-        // show total value
-        System.out.println("Total land price: " + land.getValue());
+        System.out.println("Land 1 after subdivision");
+        System.out.println(land.getArea());
+
+        System.out.println("Land 2 after subdivision");
+        System.out.println(land2.getArea());
+
+        System.out.println("Land 1 as array");
+        System.out.println(land.getArea().arrayToNumberStructure(land.getAreaArray()));
+
+        System.out.println("Land 2 as array");
+        System.out.println(land2.getArea().arrayToNumberStructure(land2.getAreaArray()));
+
+        System.out.println("Are they similar?");
+        System.out.println(land.getArea().compare(land2.getArea()));
+//
+//        // show after
+//        System.out.println("\nall area");
+//        System.out.println(land.getArea());
+//        System.out.println("area 1");
+//        System.out.println(land.getArea().getArea1());
+//        System.out.println("area 2");
+//        System.out.println(land.getArea().getArea2());
+//
+//        // show total value
+//        System.out.println("Total land price: " + land.getValue());
     }
 }

@@ -1,5 +1,8 @@
 package comp611.assignment2.subdivisions.land;
 
+import comp611.assignment2.subdivisions.approach.Approach;
+import comp611.assignment2.subdivisions.approach.BruteForceApproach;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -136,20 +139,31 @@ public class LandGUI extends JPanel implements ActionListener {
     }
 
     public static void main(String[] args) {
+
+        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 3, 50, 20,1000));
+        bruteForceApproach.startTimer();
+        Approach.Result solution = bruteForceApproach.solve();
+        System.out.println("Brute Force Solution Value: " + solution.getValue());
+        System.out.println("Brute Force Solution Time: " + solution.getTime());
+        System.out.println("This took " + bruteForceApproach.getTime() + "ms");
+        System.out.println(bruteForceApproach.getLand());
+        bruteForceApproach.stopTimer();
+
+
         JFrame frame = new JFrame("Land GUI");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Land land = new Land(6, 3, 50, 20, 1000);
-        land.subdivide(Direction.HORIZONTAL, 5, 2);
+//        Land land = new Land(6, 3, 50, 20, 1000);
+//        land.subdivide(Direction.HORIZONTAL, 5, 2);
 
-        for (Subdivision subdivision : land.getArea().getPossibleSubdivisions()) {
-            System.out.println(subdivision);
-        }
+//        for (Subdivision subdivision : bruteForceApproach.getLand().getArea().getPossibleSubdivisions()) {
+//            System.out.println(subdivision);
+//        }
 
-        System.out.println("Total land price: " + land.getValue());
+//        System.out.println("Total land price: " + land.getValue());
 
-        frame.getContentPane().add(new LandGUI(land, frame));
+        frame.getContentPane().add(new LandGUI(bruteForceApproach.getLand(), frame));
         frame.pack();
 
         frame.setLocationRelativeTo(null);

@@ -1,10 +1,9 @@
 package comp611.assignment2.subdivisions.land;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-@SuppressWarnings({"unused", "ManualArrayCopy"})
+@SuppressWarnings({"ManualArrayCopy"})
 public class Area {
     // the land this area belongs to
     private final Land land;
@@ -53,6 +52,14 @@ public class Area {
             return area1.getValue() + area2.getValue() - (subdivision.getLength() * land.getSubValue());
         } else {
             return land.getLandValue().getValue(width, height);
+        }
+    }
+
+    public boolean isFullySubdivided() {
+        if (isSubdivided()) {
+            return area1.isFullySubdivided() && area2.isFullySubdivided();
+        } else {
+            return false;
         }
     }
 
@@ -216,11 +223,150 @@ public class Area {
         return sb.toString();
     }
 
+    public List<Subdivision> getSubdivisions() {
+        List<Subdivision> subdivisions = new ArrayList<>();
+        if (isSubdivided()) {
+            subdivisions.add(subdivision);
+            subdivisions.addAll(area1.getSubdivisions());
+            subdivisions.addAll(area2.getSubdivisions());
+        }
+        return subdivisions;
+    }
+
+    private boolean compareSubdivisions(List<Subdivision> subdivisions) {
+        List<Subdivision> thisSubdivisions = getSubdivisions();
+        if (subdivisions.size() != thisSubdivisions.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < subdivisions.size(); i++) {
+            if (!subdivisions.get(i).equals(thisSubdivisions.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public Area copy() {
+        Area clone = new Area(land, width, height, xCoordinate, yCoordinate);
+        if (isSubdivided()) {
+            clone.subdivide(subdivision);
+            clone.area1 = area1.copy();
+            clone.area2 = area2.copy();
+        }
+        return clone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Area area = (Area) o;
+
+        // an area is equal to another area they have the same coordinates, size and the same subdivisions
+        return xCoordinate == area.xCoordinate &&
+                yCoordinate == area.yCoordinate &&
+                width == area.width &&
+                height == area.height &&
+                compareSubdivisions(area.getSubdivisions());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(land, width, height, xCoordinate, yCoordinate, area1, area2, subdivision);
+    }
+
     public int getHeight() {
         return height;
     }
 
     public int getWidth() {
         return width;
+    }
+
+    // compare two areas
+    // when you convert an area to an array, you get a 2d array of integers
+    // the integers represent the hashcode of the land
+    // two areas may have different hashcodes, but if they have the same subdivisions, then they are equal
+    // this method compares two areas by converting them to arrays and comparing the arrays
+    public boolean compare(Area area) {
+        if(area == null) {
+            return false;
+        }
+
+        int[][] array1 = toArray();
+        int[][] array2 = area.toArray();
+
+        if (array1.length != array2.length || array1[0].length != array2[0].length) {
+            return false;
+        }
+
+        List<Integer> list1 = arrayToNumberStructure(array1);
+        List<Integer> list2 = arrayToNumberStructure(array2);
+
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < list1.size(); i++) {
+            if (!list1.get(i).equals(list2.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public List<Integer> arrayToNumberStructure() {
+//        System.out.println("Returning array to number structure: " + Arrays.deepToString(toArray()));
+        return arrayToNumberStructure(toArray());
+    }
+
+    public List<Integer> arrayToNumberStructure(int[][] array) {
+        List<Integer> list = new ArrayList<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
+        AtomicInteger count = new AtomicInteger();
+
+        for (int[] ints : array) {
+            for (int anInt : ints) {
+                map.computeIfAbsent(anInt, k -> count.getAndIncrement());
+                list.add(map.get(anInt));
+            }
+        }
+
+        return list;
+    }
+
+    public List<Area> getAreas() {
+        List<Area> areas = new ArrayList<>();
+        if (isSubdivided()) {
+            areas.add(area1);
+            areas.add(area2);
+            areas.addAll(area1.getAreas());
+            areas.addAll(area2.getAreas());
+        }
+
+        return areas;
+    }
+
+    public boolean contains(Area area) {
+        if (area == null) {
+            return false;
+        }
+
+        if (area.xCoordinate < xCoordinate || area.yCoordinate < yCoordinate || area.xCoordinate + area.width > xCoordinate + width || area.yCoordinate + area.height > yCoordinate + height) {
+            return false;
+        }
+
+        if (isSubdivided()) {
+            return area1.contains(area) || area2.contains(area);
+        } else {
+            return true;
+        }
+    }
+
+    public Area getParent() {
+        return land.getArea().getAreas().stream().filter(a -> a.contains(this)).findFirst().orElse(null);
     }
 }
