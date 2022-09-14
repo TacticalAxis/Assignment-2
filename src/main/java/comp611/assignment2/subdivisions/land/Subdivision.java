@@ -50,4 +50,5 @@ public class Subdivision {
         Subdivision that = (Subdivision) o;
         return x == that.x && y == that.y && direction == that.direction && getLength() == that.getLength();
     }
+
 }
