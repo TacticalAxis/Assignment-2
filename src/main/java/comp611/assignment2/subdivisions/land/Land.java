@@ -8,7 +8,7 @@ public class Land {
 
     public Land(int width, int height, int subValue, double minValue, double maxValue) {
         this.landValue = new LandValue(width, height, minValue, maxValue);
-        this.area = new Area(this, width, height, 0, 0);
+        this.area = new Area(this, null, width, height, 0, 0);
         this.subValue = subValue;
     }
 
@@ -20,24 +20,44 @@ public class Land {
         return subValue;
     }
 
+//    public Area makeCopy() {
+//        return makeCopy(getArea());
+//    }
+
+//    public Area makeCopy(Area a) {
+//        Area copy = new Area(this, a.getWidth(), a.getHeight(), a.getxCoordinate(), a.getyCoordinate());
+//        if (area.isSubdivided()) {
+//            copy.subdivide(area.getSubdivision());
+//            copy.setArea1(makeCopy(area.getArea1()));
+//            copy.setArea2(makeCopy(area.getArea2()));
+//            copy.setSubdivision(area.getSubdivision());
+//        }
+//        return copy;
+//    }
+
     public void setArea(Area area) {
         this.area = area;
     }
 
     public double getValue() {
-        return area.getValue();
+        return area.getValue() - (subValue * area.getAllSubdivisionLength());
+    }
+
+    public double getValue(Area a) {
+        return a.getValue() - (subValue * a.getAllSubdivisionLength());
     }
 
     public Area getArea() {
         return area;
     }
 
-    public int[][] getAreaArray() {
+    public synchronized int[][] getAreaArray() {
         return area.toArray();
     }
 
     public void resetHard() {
         area.unSubdivide();
+        area = new Area(area);
     }
 
     public void printArea() {
@@ -64,9 +84,68 @@ public class Land {
         a.subdivide(new Subdivision(a, direction, x, y));
     }
 
+//    public void buildFromArray(List<Integer> array, int width, int height) {
+//        int[][] areaArray = new int[height][width];
+//        int index = 0;
+//        for (int i = 0; i < height; i++) {
+//            for (int j = 0; j < width; j++) {
+//                areaArray[i][j] = array.get(index);
+//                index++;
+//            }
+//        }
+//
+//        // print the array
+//        for (int[] ints : areaArray) {
+//            for (int anInt : ints) {
+//                System.out.print(anInt + " ");
+//            }
+//            System.out.println();
+//        }
+//
+//        this.area = new Area(this, width, height, 0, 0);
+//    }
+
     @Override
     public String toString() {
         return area.toString();
+    }
+
+//    public static void main(String[] args) {
+//        Land land = new Land(6, 6, 50, 20, 1000);
+//        System.out.println("INITIAL LAND VALUE: " + land.getValue());
+//        land.subdivide(Direction.HORIZONTAL, 5, 5);
+//        System.out.println("Current value: " + land.getValue());
+//        land.subdivide(Direction.VERTICAL, 5, 4);
+//        System.out.println("Current value: " + land.getValue());
+//        land.subdivide(Direction.VERTICAL, 3, 4);
+//        System.out.println("Current value: " + land.getValue());
+//        land.subdivide(Direction.HORIZONTAL, 4, 4);
+//        System.out.println("Current value: " + land.getValue());
+//        land.subdivide(Direction.HORIZONTAL, 4, 2);
+//        System.out.println("Current value: " + land.getValue());
+//        land.subdivide(Direction.HORIZONTAL, 1, 3);
+//        System.out.println("Current value: " + land.getValue());
+//        land.subdivide(Direction.VERTICAL, 2, 2);
+//        System.out.println("Current value: " + land.getValue());
+//        land.subdivide(Direction.HORIZONTAL, 1, 1);
+//        System.out.println("Current value: " + land.getValue());
+//        land.subdivide(Direction.VERTICAL, 4, 1);
+//        System.out.println("Current value: " + land.getValue());
+//
+//        System.out.println(land);
+//
+//        JFrame frame = new JFrame("Land GUI");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//
+//        frame.getContentPane().add(new LandGUI(land, frame));
+//        frame.pack();
+//
+//        frame.setLocationRelativeTo(null);
+//        frame.setVisible(true);
+//    }
+
+    public Area getSnapshot() {
+        return area.copy();
     }
 
     public static void main(String[] args) {
@@ -94,13 +173,20 @@ public class Land {
         System.out.println(land2.getArea());
 
         System.out.println("Land 1 as array");
-        System.out.println(land.getArea().arrayToNumberStructure(land.getAreaArray()));
+        System.out.println(land.getArea().inline(land.getAreaArray()));
 
         System.out.println("Land 2 as array");
-        System.out.println(land2.getArea().arrayToNumberStructure(land2.getAreaArray()));
+        System.out.println(land2.getArea().inline(land2.getAreaArray()));
 
         System.out.println("Are they similar?");
         System.out.println(land.getArea().compare(land2.getArea()));
+
+
+        Area a1 = land.getArea();
+        Area a2 = land.getSnapshot();
+//        land.buildFromArray(a2.arrayToNumberStructure(), a2.getWidth(), a2.getHeight());
+        System.out.println("Hashcode of a1: " + a1.hashCode());
+        System.out.println("Hashcode of a2: " + a2.hashCode());
 //
 //        // show after
 //        System.out.println("\nall area");

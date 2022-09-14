@@ -14,7 +14,7 @@ public class LandValue {
         this.baseValue = baseValue;
         this.maxValue = maxValue;
 
-        if (width == 6 && height == 3) {
+        if (width <= 6 && height <= 6) {
             generateTestValues();
         } else {
             generateLandValue();

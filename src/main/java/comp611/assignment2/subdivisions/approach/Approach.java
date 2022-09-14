@@ -7,14 +7,27 @@ public abstract class Approach {
 
     private final String name;
     private final Land land;
-    private final ApproachTimer timer;
     private boolean complete;
+    private int subdivisions;
+
+    private long startTime;
+    private long endTime;
 
     public Approach(Land area, String name) {
         this.land = area;
         this.complete = false;
-        this.timer = new ApproachTimer();
         this.name = name;
+        this.startTime = 0;
+        this.endTime = 0;
+        this.subdivisions = 0;
+    }
+
+    public synchronized void incrementSubdivisions() {
+        subdivisions++;
+    }
+
+    public synchronized int getSubdivisions() {
+        return subdivisions;
     }
 
     public abstract Result solve();
@@ -27,24 +40,20 @@ public abstract class Approach {
         return name;
     }
 
-    public ApproachTimer getTimer() {
-        return timer;
-    }
-
     public void setComplete(boolean complete) {
         this.complete = complete;
     }
 
     public void startTimer() {
-        timer.start();
+        startTime = System.nanoTime();
     }
 
     public void stopTimer() {
-        timer.stop();
+        endTime = System.nanoTime();
     }
 
-    public long getTime() {
-        return timer.getTime();
+    public double getTime() {
+        return (endTime - startTime) / 1000000000D;
     }
 
     public boolean isComplete() {
@@ -53,23 +62,6 @@ public abstract class Approach {
 
     public String toString() {
         return name + ": hash{" + this.hashCode() + "}";
-    }
-
-    public static class ApproachTimer {
-        private long startTime;
-        private long endTime;
-
-        public void start() {
-            startTime = System.nanoTime();
-        }
-
-        public void stop() {
-            endTime = System.nanoTime();
-        }
-
-        public long getTime() {
-            return (endTime - startTime) / 1000000;
-        }
     }
 
     public static class Result {
@@ -95,7 +87,7 @@ public abstract class Approach {
             return value;
         }
 
-        public long getTime() {
+        public double getTime() {
             return approach.getTime();
         }
     }
