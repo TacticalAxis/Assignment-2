@@ -41,9 +41,11 @@ public class BruteForceApproach extends Approach {
         return null;
     }
 
+
     public int getPossibleLayouts() {
         return permutations.size();
     }
+
 
     private static class BruteForceLayoutSet {
         private final List<Area> values;
