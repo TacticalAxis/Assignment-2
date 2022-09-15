@@ -261,7 +261,7 @@ public class Area {
             sb.append("\n");
         }
 
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     public List<Subdivision> getSubdivisions() {

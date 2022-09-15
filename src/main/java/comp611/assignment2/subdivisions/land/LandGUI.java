@@ -22,14 +22,16 @@ public class LandGUI extends JPanel implements ActionListener {
     public LandGUI(Land land, JFrame frame) {
         super(new BorderLayout());
 
+        setPreferredSize(new Dimension(800, 600));
+
         this.land = land;
 
-        this.pixelWidth = 60;
+        this.pixelWidth = (int) getPreferredSize().getWidth() / land.getArea().getWidth();
 
-        System.out.println(frame.getTitle());
+//        System.out.println(frame.getTitle());
 
         // setup draw panel
-        drawPanel = new DrawPanel(pixelWidth);
+        drawPanel = new DrawPanel();
         drawPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent me) {
@@ -40,8 +42,8 @@ public class LandGUI extends JPanel implements ActionListener {
                 textArea.setText("x=" + x + ", y=" + y);
                 // make this recolor the area
                 // land.setArea(land.getArea().copy());
-                System.out.println("Amount of subdivisions: " + land.getArea().getSubdivisions().size());
-                System.out.println("Length of subdivisions: " + land.getArea().getAllSubdivisionLength());
+//                System.out.println("Amount of subdivisions: " + land.getArea().getSubdivisions().size());
+//                System.out.println("Length of subdivisions: " + land.getArea().getAllSubdivisionLength());
             }
         });
 
@@ -101,8 +103,9 @@ public class LandGUI extends JPanel implements ActionListener {
 
     public class DrawPanel extends JPanel {
         // draw panel constructor
-        public DrawPanel(int pixelWidth) {
-            super.setPreferredSize(new Dimension(land.getArea().width * pixelWidth, land.getArea().height * pixelWidth));
+        public DrawPanel() {
+//            super.setPreferredSize(new Dimension(land.getArea().width * pixelWidth, land.getArea().height * pixelWidth));
+//            super.setPreferredSize(new Dimension(800,300));
             super.setBackground(Color.WHITE);
         }
 

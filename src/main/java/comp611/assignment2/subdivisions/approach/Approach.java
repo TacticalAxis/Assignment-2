@@ -52,6 +52,10 @@ public abstract class Approach {
         endTime = System.nanoTime();
     }
 
+    public double getCurrentTime() {
+        return (System.nanoTime() - startTime) / 1000000.0;
+    }
+
     public double getTime() {
         return (endTime - startTime) / 1000000000D;
     }

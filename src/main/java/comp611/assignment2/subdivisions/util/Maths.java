@@ -1,43 +1,56 @@
 package comp611.assignment2.subdivisions.util;
 
-import java.lang.Math;
 public class Maths {
 
-    public static double[][] getValueTable(int height, int width, double minValue, double maxValue) {
-        double[][] valueTable = new double[height][width];
+    private final double[][] valueTable;
+    private final double baseValue;
+    private final double maxValue;
 
-        //for loop that fills the outer edge of numbers
-        //from 0,0 to 0,height and 0,0 to width,0
-        for (int i = 0; i < height; i++) {
-            valueTable[i][0] = i;
-        }
-        for (int i = 0; i < width; i++) {
-            valueTable[0][i] = i;
-        }
+    public Maths(int width, int height, double baseValue, double maxValue) {
+        valueTable = new double[height][width];
+        this.baseValue = baseValue;
+        this.maxValue = maxValue;
 
+        generateLandValue();
 
-        for (int i = 1; i < height; i++) {
-            for (int j = 1; j < width; j++) {
-                //the values when adding cannot exceed the max value or be less than the min value
-                //the values are also rounded to the nearest integer
+        // set the 0,0 value to the base value
+        valueTable[0][0] = baseValue;
+    }
 
-                valueTable[i][j] = Math.sqrt(Math.pow(valueTable[i][j - 1], 2) + Math.pow(valueTable[i - 1][j], 2));
-                if (valueTable[i][j] > maxValue) {
-                    valueTable[i][j] = maxValue;
-                }
-                if (valueTable[i][j] < minValue) {
-                    valueTable[i][j] = minValue;
-                }
-            }
-        }
+    public int getHeights() {
+        return valueTable.length;
+    }
 
+    public int getWidths() {
+        return valueTable[0].length;
+    }
 
+    public double[][] getValueTable() {
         return valueTable;
     }
 
+    private void generateLandValue() {
+        for (int i = 0; i < valueTable.length; i++) {
+            for (int j = 0; j < valueTable[i].length; j++) {
+                double r = maxValue - (maxValue - baseValue) * (1 - Math.sqrt(i * i + (double) j * j));
+                double sq = Math.sqrt(valueTable.length * valueTable.length + (double) valueTable[i].length * valueTable[i].length);
+                valueTable[i][j] = roundToNearest(((r / sq) + baseValue), 10);
+            }
+        }
+    }
+
+    private static double roundToNearest(double value, double nearest) {
+        return Math.round(value / nearest) * nearest;
+    }
+
+    public double getValue(int width, int height) {
+        return valueTable[width][height];
+    }
+
     public static void main(String[] args) {
-        double[][] valueTable = getValueTable(20, 20, 0, 150);
-        for (double[] ints : valueTable) {
+        Maths maths = new Maths(10, 10, 0, 1000);
+
+        for (double[] ints : maths.getValueTable()) {
             for (double anInt : ints) {
                 System.out.print(anInt + " ");
             }
