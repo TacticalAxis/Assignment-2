@@ -183,11 +183,22 @@ public class ExactApproach extends Approach {
         }
 
         //adding an edge to the graph
+        /**
+         * It adds an edge between two vertices.
+         *
+         * @param v the first vertex
+         * @param w the vertex to be added to the adjacency list of v
+         */
         public void addEdge(int v, int w){
             visited[v][w] = true;
             visited[w][v] = true;
         }
 
+        /**
+         * It prints out the area of the room.
+         *
+         * @param area the area that is being visited
+         */
         public void DFS(Area area){
 
             for (boolean[] booleans : visited) {
