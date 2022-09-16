@@ -10,7 +10,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class ExactApproach extends Approach {
 
-    private final ExactApproachLayoutSet permutations;
+    private static ExactApproachLayoutSet permutations;
 
     public ExactApproach(Land area) {
         super(area, "Exact Approach");
@@ -44,7 +44,7 @@ public class ExactApproach extends Approach {
 
     //
     //get all possible itterations
-    public void getAllIterations(Area area){
+    public static void getAllIterations(Area area){
         if(area == null){
             return;
         }
@@ -166,56 +166,45 @@ public class ExactApproach extends Approach {
     }
 
 
-
+    //depth first search of the width and the height of the land
     public static class depthFirstSearch{
-        private LinkedList<Area> stack;
-        private boolean[][] visited;
+        private int width;
+        private int height;
+        private int[][] land;
+        private Approach approach;
 
-         public depthFirstSearch(int v){
-            stack = new LinkedList<Area>();
-            visited = new boolean[v][v];
 
-            for(int i = 0; i < v; i++){
-                for(int j = 0; j < v; j++){
-                    visited[i][j] = false;
-                }
-            }
+        public depthFirstSearch(int width, int height){
+            this.width = width;
+            this.height = height;
         }
 
-        //adding an edge to the graph
-        /**
-         * It adds an edge between two vertices.
-         *
-         * @param v the first vertex
-         * @param w the vertex to be added to the adjacency list of v
-         */
-        public void addEdge(int v, int w){
-            visited[v][w] = true;
-            visited[w][v] = true;
-        }
+        public void search(Area area){
+            //search the width
+            for(int i = 0; i < width; i++){
+                //search the height
+                for(int j = 0; j < height; j++){
+                    //check if the area is divisible
+                    if(!area.canSubdivide()){
+                        return;
+                    }
 
-        /**
-         * It prints out the area of the room.
-         *
-         * @param area the area that is being visited
-         */
-        public void DFS(Area area){
+                    if(area.getRoot().isFullySubdivided()){
+                        area.getRoot().getSubdivisions();
+                        return;
+                    }
 
-            for (boolean[] booleans : visited) {
-                stack.push(area);
-
-                while(!stack.isEmpty()){
-                    area = stack.pop();
-                    System.out.println(area + " ");
-
-                    for(int i = 0; i < visited.length; i++){
-                        if(visited[area.height][i] && !visited[i][i]){
-                            DFS(area.getArea1());
-                        }
+                    // This is the recursive function that is used to find all possible solutions.
+                    for(Subdivision sub : area.getSubdivisions()){
+                        area.subdivide(sub);
+                        approach.incrementSubdivisions();
+                        permutations.add(area.getRoot().copy());
+                        getAllIterations(area.getArea1());
+                        getAllIterations(area.getArea2());
+                        area.unSubdivide();
                     }
                 }
             }
-
         }
     }
 

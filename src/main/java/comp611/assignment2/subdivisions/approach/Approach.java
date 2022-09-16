@@ -22,7 +22,7 @@ public abstract class Approach {
         this.subdivisions = 0;
     }
 
-    public synchronized void incrementSubdivisions() {
+    public static synchronized void incrementSubdivisions() {
         subdivisions++;
     }
 
@@ -32,7 +32,7 @@ public abstract class Approach {
 
     public abstract Result solve();
 
-    public Land getLand() {
+    public static Land getLand() {
         return land;
     }
 
