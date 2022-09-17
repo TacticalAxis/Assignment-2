@@ -4,7 +4,6 @@ import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -42,15 +41,20 @@ public class ExactApproach extends Approach {
         return null;
     }
 
+    @Override
+    public double getBestValue() {
+        return 0;
+    }
+
     //
     //get all possible itterations
-    public static void getAllIterations(Area area){
+    public void getAllIterations(Area area){
         if(area == null){
             return;
         }
 
         //check if the area is divisible
-        if(!area.canSubdivide()){
+        if(area.canSubdivide()){
             return;
         }
 
@@ -167,7 +171,7 @@ public class ExactApproach extends Approach {
 
 
     //depth first search of the width and the height of the land
-    public static class depthFirstSearch{
+    public class depthFirstSearch {
         private int width;
         private int height;
         private int[][] land;
@@ -185,7 +189,7 @@ public class ExactApproach extends Approach {
                 //search the height
                 for(int j = 0; j < height; j++){
                     //check if the area is divisible
-                    if(!area.canSubdivide()){
+                    if(area.canSubdivide()){
                         return;
                     }
 
@@ -207,9 +211,4 @@ public class ExactApproach extends Approach {
             }
         }
     }
-
-
-
-
-
 }

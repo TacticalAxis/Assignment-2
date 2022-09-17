@@ -54,14 +54,6 @@ public class Area {
         this.subdivision = area.subdivision;
     }
 
-//    public int getyCoordinate() {
-//        return yCoordinate;
-//    }
-//
-//    public int getxCoordinate() {
-//        return xCoordinate;
-//    }
-
     public Land getLand() {
         return land;
     }
@@ -80,15 +72,6 @@ public class Area {
         } else {
             return land.getLandValue().getValue(width, height);
         }
-//        if (isSubdivided()) {
-////            System.out.println("Returning value of " + (area1.getValue() + area2.getValue() - (subdivision.getLength() * land.getSubValue())));
-////            System.out.println("Area 1: $" + area1.getValue());
-////            System.out.println("Area 2: $" + area2.getValue());
-////            System.out.println("Subdivision: $" + (subdivision.getLength() * land.getSubValue()));
-//            return area1.getValue() + area2.getValue() - (subdivision.getLength() * land.getSubValue());
-//        } else {
-//            return land.getLandValue().getValue(width, height);
-//        }
     }
 
     public boolean isFullySubdivided() {
@@ -103,29 +86,23 @@ public class Area {
         return area1 != null && area2 != null;
     }
 
-//    public Subdivision getSubdivision() {
-//        return subdivision;
-//    }
-
     public boolean canSubdivide() {
-        return !isSubdivided() && (width > 1 || height > 1);
-        //return width > 1 || height > 1;
+        return isSubdivided() || (width <= 1 && height <= 1);
     }
 
-//    public boolean isSmallest() {
-//        return width == 1 && height == 1;
-//    }
+    public HashMap<Subdivision, Double> getPossibleSubdivisions() {
+        HashMap<Subdivision, Double> possibleSubdivisions = new HashMap<>();
+//        List<Subdivision> subdivisions = new ArrayList<>();
 
-    public List<Subdivision> getPossibleSubdivisions() {
-        List<Subdivision> subdivisions = new ArrayList<>();
-
-        if (isSubdivided()) {return subdivisions;}
+        if (isSubdivided()) {return possibleSubdivisions;}
 
         // iterate over all possible vertical subdivisions
         for (int x = 1; x < width; x++) {
             Subdivision s = new Subdivision(this, Direction.VERTICAL, x + xCoordinate, 0);
             this.subdivide(s);
-            subdivisions.add(s);
+            if(isSubdivided()) {
+                possibleSubdivisions.put(s, land.getValue());
+            }
             unSubdivide();
         }
 
@@ -133,12 +110,42 @@ public class Area {
         for (int y = 1; y < height; y++) {
             Subdivision s = new Subdivision(this, Direction.HORIZONTAL, 0, y + yCoordinate);
             this.subdivide(s);
-            subdivisions.add(s);
+            if(isSubdivided()) {
+                possibleSubdivisions.put(s, land.getValue());
+            }
             unSubdivide();
         }
 
-        return subdivisions;
+        return possibleSubdivisions;
     }
+
+//    public List<Subdivision> getPossibleSubdivisions() {
+//        List<Subdivision> subdivisions = new ArrayList<>();
+//
+//        if (isSubdivided()) {return subdivisions;}
+//
+//        // iterate over all possible vertical subdivisions
+//        for (int x = 1; x < width; x++) {
+//            Subdivision s = new Subdivision(this, Direction.VERTICAL, x + xCoordinate, 0);
+//            this.subdivide(s);
+//            if(isSubdivided()) {
+//                subdivisions.add(s);
+//            }
+//            unSubdivide();
+//        }
+//
+//        // iterate over all possible horizontal subdivisions
+//        for (int y = 1; y < height; y++) {
+//            Subdivision s = new Subdivision(this, Direction.HORIZONTAL, 0, y + yCoordinate);
+//            this.subdivide(s);
+//            if(isSubdivided()) {
+//                subdivisions.add(s);
+//            }
+//            unSubdivide();
+//        }
+//
+//        return subdivisions;
+//    }
 
     public int[][] toArray() {
         int[][] array = new int[height][width];
@@ -179,6 +186,20 @@ public class Area {
         return array;
     }
 
+//    public void subdivide(Direction direction, int x, int y) {
+//        // first check if x and y are valid
+//        if (x <= 0 || x >= getWidth() || y <= 0 || y >= getHeight()) {
+//            throw new IllegalArgumentException("x and y must be within the area: x=" + x + ", y=" + y);
+//        }
+//
+//        Area a = findAreaWithCoordinates(x, y);
+//        if (a == null) {
+//            throw new IllegalArgumentException("x and y must be within the area (a is null): x=" + x + ", y=" + y);
+//        }
+//
+//        a.subdivide(new Subdivision(a, direction, x, y));
+//    }
+
     public void subdivide(Subdivision subdivision) {
         // if area size is 1, then it cannot be subdivided
         if (width == 1 && height == 1) {
@@ -188,11 +209,9 @@ public class Area {
 
         if (isSubdivided()) {
             return;
-//            throw new IllegalStateException("Area is already subdivided");
         }
 
         if (subdivision.getDirection() == Direction.VERTICAL) {
-//            System.out.println("trying to sub - x: " + subdivision + ". X: " + subdivision.getX() + " xCoordinate: " + xCoordinate + " width: " + width);
             if (subdivision.getX() < xCoordinate || subdivision.getX() >= xCoordinate + width) {
                 throw new IllegalArgumentException("x must be within the area!");
             }
@@ -299,18 +318,6 @@ public class Area {
         return true;
     }
 
-//    public void setArea1(Area area1) {
-//        this.area1 = area1;
-//    }
-//
-//    public void setArea2(Area area2) {
-//        this.area2 = area2;
-//    }
-//
-//    public void setSubdivision(Subdivision subdivision) {
-//        this.subdivision = subdivision;
-//    }
-
     public Area getRoot() {
         if (getParent() == null) {
             return this;
@@ -381,11 +388,6 @@ public class Area {
         return true;
     }
 
-//    public List<Integer> inline() {
-////        System.out.println("Returning array to number structure: " + Arrays.deepToString(toArray()));
-//        return inline(toArray());
-//    }
-
     public List<Integer> inline(int[][] array) {
 //        System.out.println("Returning array to number structure: " + Arrays.deepToString(array));
         List<Integer> list = new ArrayList<>();
@@ -401,49 +403,10 @@ public class Area {
                 list.add(map.get(anInt));
             }
         }
-//        AtomicInteger count = new AtomicInteger();
-//
-//        for (int[] ints : array) {
-//            for (int anInt : ints) {
-//                map.computeIfAbsent(anInt, k -> count.getAndIncrement());
-//                list.add(map.get(anInt));
-//            }
-//        }
-//
         return list;
     }
-
-//    public List<Area> getAreas() {
-//        List<Area> areas = new ArrayList<>();
-//        if (isSubdivided()) {
-//            areas.add(area1);
-//            areas.add(area2);
-//            areas.addAll(area1.getAreas());
-//            areas.addAll(area2.getAreas());
-//        }
-//
-//        return areas;
-//    }
-
-//    public boolean contains(Area area) {
-//        if (area == null) {
-//            return false;
-//        }
-//
-//        if (area.xCoordinate < xCoordinate || area.yCoordinate < yCoordinate || area.xCoordinate + area.width > xCoordinate + width || area.yCoordinate + area.height > yCoordinate + height) {
-//            return false;
-//        }
-//
-//        if (isSubdivided()) {
-//            return area1.contains(area) || area2.contains(area);
-//        } else {
-//            return true;
-//        }
-//    }
 
     public Area getParent() {
         return parent;
     }
-//        return land.getArea().getAreas().stream().filter(a -> a.contains(this)).findFirst().orElse(null);
-//    }
 }

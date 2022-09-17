@@ -1,8 +1,8 @@
 package comp611.assignment2.subdivisions.approach;
 
+import comp611.assignment2.subdivisions.gui.LandGUI;
 import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
-import comp611.assignment2.subdivisions.land.LandGUI;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
 import javax.swing.*;
@@ -28,6 +28,7 @@ public class BruteForceApproach extends Approach {
 
         // stop timer
         stopTimer();
+        setComplete(true);
 
         // get solution
         Area area = permutations.getSolution();
@@ -43,11 +44,14 @@ public class BruteForceApproach extends Approach {
         return null;
     }
 
-
-    public int getPossibleLayouts() {
-        return permutations.size();
+    @Override
+    public double getBestValue() {
+        return permutations.getCurrentBestValue();
     }
-
+//
+//    public int getPossibleLayouts() {
+//        return permutations.size();
+//    }
 
     private static class BruteForceLayoutSet {
         private double currentBestValue;
@@ -76,6 +80,10 @@ public class BruteForceApproach extends Approach {
             }
         }
 
+        private double getCurrentBestValue() {
+            return currentBestValue;
+        }
+
         private Area getSolution() {
             if (values.isEmpty()) {
                 return null;
@@ -84,6 +92,7 @@ public class BruteForceApproach extends Approach {
             Area best = values.get(0);
             for (Area area : values) {
                 if (land.getValue(area) > land.getValue(best)) {
+
                     best = area;
                 }
             }
@@ -100,7 +109,7 @@ public class BruteForceApproach extends Approach {
         }
 
         // check area is valid
-        if(!area.canSubdivide()) {
+        if(area.canSubdivide()) {
             return;
         }
 
@@ -111,7 +120,7 @@ public class BruteForceApproach extends Approach {
         }
 
         // iterate through all possible subdivisions
-        for(Subdivision sub : area.getPossibleSubdivisions()) {
+        for(Subdivision sub : area.getPossibleSubdivisions().keySet()) {
             area.subdivide(sub);
             incrementSubdivisions();
             permutations.add(area.getRoot().copy());
@@ -121,33 +130,20 @@ public class BruteForceApproach extends Approach {
         }
     }
 
-//    public static void main(String[] args) {
-//        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 6, 50, 20,1000));
-//        Result solution = bruteForceApproach.solve();
-//        if(solution != null) {
-//            System.out.println("Brute Force Solution Found: " + solution.getValue());
-//            System.out.println("This took " + bruteForceApproach.getTime() + "s");
-//            System.out.println("Subdivisions Found: " + bruteForceApproach.getSubdivisions());
-//            System.out.println("Unique Combinations: " + bruteForceApproach.getPossibleLayouts());
-//            System.out.println("Solution:\n" + bruteForceApproach.getLand());
-//        }
-//    }
-
     public static void main(String[] args) {
-        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(9, 9, 50, 20,1000));
+        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 6, 0, 20,1000));
         Result solution = bruteForceApproach.solve();
         if(solution != null) {
-            System.out.println("Brute Force Solution Found: " + solution.getValue());
+            System.out.println("Bruteforce Solution Found: " + solution.getValue());
             System.out.println("This took " + bruteForceApproach.getTime() + "s");
             System.out.println("Subdivisions Found: " + bruteForceApproach.getSubdivisions());
-            System.out.println("Unique Combinations: " + bruteForceApproach.getPossibleLayouts());
             System.out.println("Solution:\n" + bruteForceApproach.getLand());
         }
 
         JFrame frame = new JFrame("Land GUI");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        frame.getContentPane().add(new LandGUI(bruteForceApproach.getLand(), frame));
+        frame.getContentPane().add(new LandGUI(bruteForceApproach, frame));
         frame.pack();
 
         frame.setLocationRelativeTo(null);

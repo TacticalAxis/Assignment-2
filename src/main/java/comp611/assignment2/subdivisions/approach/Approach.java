@@ -22,7 +22,7 @@ public abstract class Approach {
         this.subdivisions = 0;
     }
 
-    public static synchronized void incrementSubdivisions() {
+    public synchronized void incrementSubdivisions() {
         subdivisions++;
     }
 
@@ -31,8 +31,9 @@ public abstract class Approach {
     }
 
     public abstract Result solve();
+    public abstract double getBestValue();
 
-    public static Land getLand() {
+    public Land getLand() {
         return land;
     }
 
@@ -52,12 +53,12 @@ public abstract class Approach {
         endTime = System.nanoTime();
     }
 
-    public double getCurrentTime() {
-        return (System.nanoTime() - startTime) / 1000000.0;
+    public synchronized double getCurrentTime() {
+        return Math.round(((System.nanoTime() - startTime) / 1000000.0) * 100.0) / 100.0;
     }
 
     public double getTime() {
-        return (endTime - startTime) / 1000000000D;
+        return Math.round((endTime - startTime) / 1000000.0 * 100.0) / 100.0;
     }
 
     public boolean isComplete() {
