@@ -26,12 +26,17 @@ public class ExactApproach extends Approach {
 
         stopTimer();
 
-        //call the method to find the best value
-        int area = Solution();
-        if(area != 0) {
+        //call the solution method
+        Area area = getSolution();
+        if(area != null) {
+            //solution found
             getLand().setArea(area);
-            return new Result(this, area, subdivisions);
+
+            //return result
+            return new Result(this, area.getLand().getValue(), getSubdivisions());
         }
+
+
 
 
         //no solution found
@@ -44,7 +49,7 @@ public class ExactApproach extends Approach {
     }
 
     //create subdivide method
-    private int findSubDivisions(Area area){
+    private Area findSubDivisions(Area area){
         //get all possible subDivisions
         List<Subdivision> subDivisions = area.getSubdivisions();
         //iterate through all possible subDivisions
@@ -67,23 +72,18 @@ public class ExactApproach extends Approach {
                 area.unSubdivide();
             }
         }
-        return currentLandValue;
+        return area;
 
     }
 
     //create a method to find the best value
-    private int Solution(){
-        //create a variable to store the best value
-        int bestValue = 0;
-        //iterate through the hashmap
-        for(Subdivision sub : subMap.keySet()){
-            //check if the value is greater than the best value
-            if(subMap.get(sub) > bestValue){
-                //if it is, set the best value to the new value
-                bestValue = subMap.get(sub);
-            }
+    private Area getSolution(){
+        //returns the value stored in the hashmap
+        if(subMap.containsValue(currentLandValue)){
+            return getLand().getArea();
         }
-        return bestValue;
+        return null;
+
     }
 
 
