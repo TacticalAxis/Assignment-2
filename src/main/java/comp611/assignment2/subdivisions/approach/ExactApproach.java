@@ -158,6 +158,47 @@ public class ExactApproach extends Approach {
                 : containsRecursiveNode(current.right, value);
     }
 
+    private Node deleteRecursive(Node current, int value){
+        if(current == null){
+            return null;
+        }
+
+        if(value == current.value){
+            //code to remove the node
+            switch (current.getNumberOfChildren()){
+                case 0:
+                    return null;
+                case 1:
+                    return current.left == null ? current.right : current.left;
+                case 2:
+                    int smallestValue = findSmallestValue(current.right);
+                    current.value = smallestValue;
+                    current.right = deleteRecursive(current.right, smallestValue);
+                    return current;
+            }
+        }
+
+        if(value < current.value){
+            current.left = deleteRecursive(current.left, value);
+            return current;
+        }else{
+            current.right = deleteRecursive(current.right, value);
+            return current;
+        }
+    }
+
+    public void traverseInOrder(Node node){
+        if(node != null){
+            traverseInOrder(node.left);
+            System.out.print(" " + node.value);
+            traverseInOrder(node.right);
+        }
+    }
+
+    private int findSmallestValue(Node right) {
+        return right.left == null ? right.value : findSmallestValue(right.left);
+    }
+
 
     public static void main(String[] args) {
         ExactApproach exactApproach = new ExactApproach(new Land(10,8, 50, 20,1000));
@@ -194,6 +235,17 @@ public class ExactApproach extends Approach {
             this.value = value;
             right = null;
             left = null;
+        }
+
+        public int getNumberOfChildren() {
+            int count = 0;
+            if(left != null){
+                count++;
+            }
+            if(right != null){
+                count++;
+            }
+            return count;
         }
     }
 
