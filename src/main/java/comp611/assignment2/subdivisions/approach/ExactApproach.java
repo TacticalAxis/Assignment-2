@@ -56,7 +56,7 @@ public class ExactApproach extends Approach {
             //subdivide the area
             area.subdivide(sub);
             //increment the subdivisions
-            subdivisions++;
+            incrementSubdivisions();
             //add the subdivision to the hashmap
             subMap.put(sub, subdivisions);
             //check if the value is greater than the current value
@@ -83,11 +83,30 @@ public class ExactApproach extends Approach {
         Area area = getLand().getArea();
         //loop through the hashmap
         for(Subdivision sub : subMap.keySet()) {
-            //subdivide the area
-            area.subdivide(sub);
+            //compare the area with the best area found
+            if(area.getValue() > currentLandValue) {
+                //if it is, return the area
+                return area;
+            } else {
+                //if it is not, subdivide the area
+                area.subdivide(sub);
+                //call the recursive method again
+                area = getSolution();
+            }
         }
         //return the area
         return area;
+
+
+//        //get the area
+//        Area area = getLand().getArea();
+//        //loop through the hashmap
+//        for(Subdivision sub : subMap.keySet()) {
+//            //subdivide the area
+//            area.subdivide(sub);
+//        }
+//        //return the area
+//        return area;
     }
 
 
