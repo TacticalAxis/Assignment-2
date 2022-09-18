@@ -53,16 +53,16 @@ public class LandGUI extends JPanel implements ActionListener {
         drawPanel.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseMoved(MouseEvent me) {
-            // print out coordinates
-            int x = me.getX() / pixelWidth;
-            int y = me.getY() / pixelHeight;
-            Area a = land.getArea().findAreaWithCoordinates(x, y);
-            if (a != null) {
-                frame.setTitle("LandGUI (" + approach.getName() + "): $" + land.getValue());
-                textArea.setText("x=" + x + ", y=" + y + ", value=$" + a.getValue() + ", width=" + a.getWidth() + ", height=" + a.getHeight() + ", area=" + (a.getWidth() * a.getHeight()));
-            } else {
-                textArea.setText("x=" + x + ", y=" + y);
-            }
+                // print out coordinates
+                int x = me.getX() / pixelWidth;
+                int y = me.getY() / pixelHeight;
+                Area a = land.getArea().findAreaWithCoordinates(x, y);
+                if (a != null) {
+                    frame.setTitle("LandGUI (" + approach.getName() + "): $" + land.getValue());
+                    textArea.setText("x=" + x + ", y=" + y + ", value=$" + a.getValue() + ", width=" + a.getWidth() + ", height=" + a.getHeight() + ", area=" + (a.getWidth() * a.getHeight()));
+                } else {
+                    textArea.setText("x=" + x + ", y=" + y);
+                }
             }
         });
 

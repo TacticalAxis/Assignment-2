@@ -51,4 +51,7 @@ public class Subdivision {
         return x == that.x && y == that.y && direction == that.direction && getLength() == that.getLength();
     }
 
+    public boolean matches(int x, int y, Direction direction, int length) {
+        return this.x == x && this.y == y && this.direction == direction && getLength() == length;
+    }
 }

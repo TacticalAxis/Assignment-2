@@ -6,136 +6,103 @@ import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BruteForceApproach extends Approach {
 
-    private final BruteForceLayoutSet permutations;
+    private Area bestArea;
 
     public BruteForceApproach(Land land) {
         super(land, "Brute Force Approach");
-        this.permutations = new BruteForceLayoutSet(land);
+        this.bestArea = land.getArea().copy();
     }
 
     @Override
     public Result solve() {
+        // reset complete flag
+        setComplete(false);
+
         // start timer
         startTimer();
 
         // start recursive search
         findSub(getLand().getArea());
 
+        getLand().setArea(bestArea);
+
         // stop timer
         stopTimer();
+
+        // set complete
         setComplete(true);
 
-        // get solution
-        Area area = permutations.getSolution();
-        if(area != null) {
-            // solution found
-            getLand().setArea(area);
-
-            // return result
-            return new Result(this, area.getLand().getValue(), getSubdivisions());
+        if(bestArea != null) {
+            return new Result(this, bestArea.getLand().getValue(), getSubdivisions());
+        } else {
+            return null;
         }
-
-        // no solution found
-        return null;
     }
 
     @Override
     public double getBestValue() {
-        return permutations.getCurrentBestValue();
-    }
-//
-//    public int getPossibleLayouts() {
-//        return permutations.size();
-//    }
-
-    private static class BruteForceLayoutSet {
-        private double currentBestValue;
-        private final List<Area> values;
-        private final Land land;
-
-        public BruteForceLayoutSet(Land land) {
-            values = new ArrayList<>();
-            this.land = land;
-            this.currentBestValue = 0.0d;
-        }
-
-        public int size() {
-            return values.size();
-        }
-
-        private void add(Area area) {
-            if(area == null) {
-                return;
-            }
-
-            Area toAdd = area.copy();
-            if(land.getValue(toAdd) > currentBestValue) {
-                values.add(toAdd);
-                currentBestValue = land.getValue(area);
-            }
-        }
-
-        private double getCurrentBestValue() {
-            return currentBestValue;
-        }
-
-        private Area getSolution() {
-            if (values.isEmpty()) {
-                return null;
-            }
-
-            Area best = values.get(0);
-            for (Area area : values) {
-                if (land.getValue(area) > land.getValue(best)) {
-
-                    best = area;
-                }
-            }
-
-            return best;
-        }
+        return 0;
     }
 
     // single-level
     private void findSub(Area area) {
         // check area not null
-        if(area == null) {
+        if (area == null) {
             return;
         }
 
-        // check area is valid
-        if(area.canSubdivide()) {
+        System.out.println("Value: " + eval(area.getRoot()));
+        if (eval(area.getRoot()) > eval(bestArea)) {
+            bestArea = area.getRoot().copy();
+        }
+
+        // check area is big enough to subdivide
+        if (area.getWidth() < 2 || area.getHeight() < 2) {
             return;
         }
 
-        // check area can be subdivided further
-        if(area.getRoot().isFullySubdivided()) {
-            area.getRoot().unSubdivide();
-            return;
-        }
+        // get all possible subdivisions
+        List<Area> areas = area.getSubAreas();
+        for(Area subArea : areas) {
+//            findSub(subArea);
+            for (Subdivision sub : subArea.getPossibleSubdivisions().keySet()) {
+                // subdivide
+                subArea.subdivide(sub);
+                incrementSubdivisions();
 
-        // iterate through all possible subdivisions
-        for(Subdivision sub : area.getPossibleSubdivisions().keySet()) {
-            area.subdivide(sub);
-            incrementSubdivisions();
-            permutations.add(area.getRoot().copy());
-            findSub(area.getArea1());
-            findSub(area.getArea2());
-            area.unSubdivide();
+                // recurse
+                findSub(subArea);
+//                findSub(area.getArea1());
+//                findSub(area.getArea2());
+
+                // un-subdivide
+                subArea.unSubdivide();
+            }
         }
+//        for (Subdivision sub : area.getPossibleSubdivisions().keySet()) {
+//            // subdivide
+//            area.subdivide(sub);
+//            incrementSubdivisions();
+//
+//            // recurse
+//            findSub(area.getArea1());
+//            findSub(area.getArea2());
+//
+//            // un-subdivide
+//            area.unSubdivide();
+//        }
     }
 
     public static void main(String[] args) {
-        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 6, 0, 20,1000));
+        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 6, 20, 20,1000));
         Result solution = bruteForceApproach.solve();
         if(solution != null) {
             System.out.println("Bruteforce Solution Found: " + solution.getValue());
-            System.out.println("This took " + bruteForceApproach.getTime() + "s");
+            System.out.println("This took " + bruteForceApproach.getTime() + "ms");
             System.out.println("Subdivisions Found: " + bruteForceApproach.getSubdivisions());
             System.out.println("Solution:\n" + bruteForceApproach.getLand());
         }

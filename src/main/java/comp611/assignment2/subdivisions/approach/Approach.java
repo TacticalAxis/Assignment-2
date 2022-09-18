@@ -1,5 +1,6 @@
 package comp611.assignment2.subdivisions.approach;
 
+import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
 
 @SuppressWarnings("unused")
@@ -51,6 +52,10 @@ public abstract class Approach {
 
     public void stopTimer() {
         endTime = System.nanoTime();
+    }
+
+    public double eval(Area area) {
+        return getLand().getValue(area);
     }
 
     public synchronized double getCurrentTime() {

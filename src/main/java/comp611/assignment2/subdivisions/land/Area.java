@@ -1,11 +1,10 @@
 package comp611.assignment2.subdivisions.land;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import comp611.assignment2.subdivisions.ArrayUtil;
 
-@SuppressWarnings({"ManualArrayCopy"})
+import java.util.*;
+
+//@SuppressWarnings({"ManualArrayCopy"})
 public class Area {
     // the land this area belongs to
     private final Land land;
@@ -82,15 +81,29 @@ public class Area {
         }
     }
 
+    public List<Area> getSubAreas() {
+        List<Area> subAreas = new ArrayList<>();
+        if(isSubdivided()) {
+            subAreas.addAll(area1.getSubAreas());
+            subAreas.addAll(area2.getSubAreas());
+        } else {
+            if(this.height > 1 && this.width > 1) {
+                subAreas.add(this);
+            }
+//            subAreas.add(this);
+        }
+        return subAreas;
+    }
+
     public boolean isSubdivided() {
         return area1 != null && area2 != null;
     }
 
     public boolean canSubdivide() {
-        return isSubdivided() || (width <= 1 && height <= 1);
+        return !isSubdivided() && width > 1 && height > 1;
     }
 
-    public HashMap<Subdivision, Double> getPossibleSubdivisions() {
+    public Map<Subdivision, Double> getPossibleSubdivisions() {
         HashMap<Subdivision, Double> possibleSubdivisions = new HashMap<>();
 //        List<Subdivision> subdivisions = new ArrayList<>();
 
@@ -119,34 +132,6 @@ public class Area {
         return possibleSubdivisions;
     }
 
-//    public List<Subdivision> getPossibleSubdivisions() {
-//        List<Subdivision> subdivisions = new ArrayList<>();
-//
-//        if (isSubdivided()) {return subdivisions;}
-//
-//        // iterate over all possible vertical subdivisions
-//        for (int x = 1; x < width; x++) {
-//            Subdivision s = new Subdivision(this, Direction.VERTICAL, x + xCoordinate, 0);
-//            this.subdivide(s);
-//            if(isSubdivided()) {
-//                subdivisions.add(s);
-//            }
-//            unSubdivide();
-//        }
-//
-//        // iterate over all possible horizontal subdivisions
-//        for (int y = 1; y < height; y++) {
-//            Subdivision s = new Subdivision(this, Direction.HORIZONTAL, 0, y + yCoordinate);
-//            this.subdivide(s);
-//            if(isSubdivided()) {
-//                subdivisions.add(s);
-//            }
-//            unSubdivide();
-//        }
-//
-//        return subdivisions;
-//    }
-
     public int[][] toArray() {
         int[][] array = new int[height][width];
 
@@ -156,25 +141,17 @@ public class Area {
 
             if(subdivision.getDirection() == Direction.VERTICAL) {
                 for (int i = 0; i < area1Array.length; i++) {
-                    for (int j = 0; j < area1Array[i].length; j++) {
-                        array[i][j] = area1Array[i][j];
-                    }
+                    System.arraycopy(area1Array[i], 0, array[i], 0, area1Array[i].length);
                 }
                 for (int i = 0; i < area2Array.length; i++) {
-                    for (int j = 0; j < area2Array[i].length; j++) {
-                        array[i][j + area1Array[i].length] = area2Array[i][j];
-                    }
+                    System.arraycopy(area2Array[i], 0, array[i], area1Array[i].length, area2Array[i].length);
                 }
             } else {
                 for (int i = 0; i < area1Array.length; i++) {
-                    for (int j = 0; j < area1Array[i].length; j++) {
-                        array[i][j] = area1Array[i][j];
-                    }
+                    System.arraycopy(area1Array[i], 0, array[i], 0, area1Array[i].length);
                 }
                 for (int i = 0; i < area2Array.length; i++) {
-                    for (int j = 0; j < area2Array[i].length; j++) {
-                        array[i + area1Array.length][j] = area2Array[i][j];
-                    }
+                    System.arraycopy(area2Array[i], 0, array[i + area1Array.length], 0, area2Array[i].length);
                 }
             }
         } else {
@@ -365,45 +342,7 @@ public class Area {
             return false;
         }
 
-        int[][] array1 = toArray();
-        int[][] array2 = area.toArray();
-
-        if (array1.length != array2.length || array1[0].length != array2[0].length) {
-            return false;
-        }
-
-        List<Integer> list1 = inline(array1);
-        List<Integer> list2 = inline(array2);
-
-        if (list1.size() != list2.size()) {
-            return false;
-        }
-
-        for (int i = 0; i < list1.size(); i++) {
-            if (!list1.get(i).equals(list2.get(i))) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public List<Integer> inline(int[][] array) {
-//        System.out.println("Returning array to number structure: " + Arrays.deepToString(array));
-        List<Integer> list = new ArrayList<>();
-        HashMap<Integer, Integer> map = new HashMap<>();
-
-        int count = 0;
-        for (int[] ints : array) {
-            for (int anInt : ints) {
-                if (!map.containsKey(anInt)) {
-                    map.put(anInt, count);
-                    count++;
-                }
-                list.add(map.get(anInt));
-            }
-        }
-        return list;
+        return ArrayUtil.areTheyTheSame(toArray(), area.toArray());
     }
 
     public Area getParent() {
