@@ -83,6 +83,7 @@ public class BruteForceApproach extends Approach {
                 subArea.unSubdivide();
             }
         }
+
 //        for (Subdivision sub : area.getPossibleSubdivisions().keySet()) {
 //            // subdivide
 //            area.subdivide(sub);
