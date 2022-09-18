@@ -6,10 +6,7 @@ import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
 import javax.swing.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 
 public class BruteForceApproach extends Approach {
 
@@ -88,20 +85,42 @@ public class BruteForceApproach extends Approach {
             return;
         }
 
-        // get all possible subdivisions
-        List<Area> areas = area.getSubAreas();
-        for (Area subArea : areas) {
-            Map<Subdivision, Double> subs = subArea.getPossibleSubdivisions();
-            for (Subdivision sub : subs.keySet()) {
-                if (Objects.equals(subs.get(sub), Collections.max(subs.values()))) {
-                    subArea.subdivide(sub);
+        Set<Subdivision> areaSubdivisions = area.getPossibleSubdivisions().keySet();
+        for(Subdivision areaSub : areaSubdivisions) {
+            area.subdivide(areaSub);
+
+            Area a1 = area.getArea1();
+            Area a2 = area.getArea2();
+
+            Set<Subdivision> a1subs = a1.getPossibleSubdivisions().keySet();
+            Set<Subdivision> a2subs = a2.getPossibleSubdivisions().keySet();
+
+            for(Subdivision area1sub : a1subs) {
+                incrementSubdivisions();
+                a1.subdivide(area1sub);
+
+                for(Subdivision area2sub : a2subs) {
                     incrementSubdivisions();
-                    findSub(subArea);
-                    findSub(area.getArea1());
-                    findSub(area.getArea2());
-                    subArea.unSubdivide();
+                    a2.subdivide(area2sub);
+
+                    if(eval(a2.getRoot()) > eval(bestArea)) {
+                        bestArea= a2.getRoot().copy();
+                    }
+
+                    if(eval(a1.getRoot()) > eval(bestArea)) {
+                        bestArea= a1.getRoot().copy();
+                    }
+
+                    findSub(a1);
+                    findSub(a2);
+
+                    a2.unSubdivide();
                 }
+
+                a1.unSubdivide();
             }
+
+            area.unSubdivide();
         }
     }
 }
