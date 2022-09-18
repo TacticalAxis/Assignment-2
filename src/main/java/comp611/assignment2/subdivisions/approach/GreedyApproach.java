@@ -89,7 +89,7 @@ public class GreedyApproach extends Approach {
     }
 
     public static void main(String[] args) {
-        GreedyApproach greedyApproach = new GreedyApproach(new Land(6, 3, 50, 20,1000));
+        GreedyApproach greedyApproach = new GreedyApproach(new Land(10, 8, 50, 20,1000));
         Result solution = greedyApproach.solve();
         if(solution != null) {
             System.out.println("Greedy Solution Found: " + solution.getValue());

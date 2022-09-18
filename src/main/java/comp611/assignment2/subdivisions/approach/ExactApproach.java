@@ -96,8 +96,6 @@ public class ExactApproach extends Approach {
         }
         //return the area
         return area;
-
-
 //        //get the area
 //        Area area = getLand().getArea();
 //        //loop through the hashmap
@@ -111,10 +109,10 @@ public class ExactApproach extends Approach {
 
 
     public static void main(String[] args) {
-        ExactApproach exactApproach = new ExactApproach(new Land(6, 10, 70, 20,1000));
+        ExactApproach exactApproach = new ExactApproach(new Land(10,8, 50, 20,1000));
         Result solution = exactApproach.solve();
         if(solution != null) {
-            System.out.println("Greedy Solution Found: " + solution.getValue());
+            System.out.println("Exact Solution Found: " + solution.getValue());
             System.out.println("This took " + exactApproach.getTime() + "s");
             System.out.println("Subdivisions Found: " + exactApproach.getSubdivisions());
             System.out.println("Solution:\n" + exactApproach.getLand());
