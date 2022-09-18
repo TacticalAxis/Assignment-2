@@ -12,3 +12,4 @@
 *.pb
 *.xml
 *.pb
+.idea/misc.xml
