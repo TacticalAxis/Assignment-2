@@ -10,3 +10,5 @@
 .idea/misc.xml
 .idea/sonarlint/issuestore/index.pb
 *.pb
+*.xml
+*.pb
