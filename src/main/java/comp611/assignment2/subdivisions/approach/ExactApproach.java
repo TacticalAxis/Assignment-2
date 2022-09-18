@@ -13,6 +13,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class ExactApproach extends Approach {
 
+    private Node root;
     private int currentLandValue;
     private int subdivisions;
     private HashMap<Subdivision, Integer> subMap = new HashMap<>();
@@ -108,6 +109,56 @@ public class ExactApproach extends Approach {
     }
 
 
+
+    /**
+     * If the root is null, create a new node and return it. If the root is not null, then recursively call the add method
+     * on the left or right subtree depending on the value you want to insert
+     *
+     * @param value The value to be added to the tree.
+     */
+    public void add(int value){
+        root = addRecursive(root, value);
+    }
+
+    /**
+     * If the value is less than the current node, go left. If the value is greater than the current node, go right. If the
+     * value is equal to the current node, do nothing
+     *
+     * @param current The current node we are looking at.
+     * @param value The value to be added to the tree.
+     * @return The current node.
+     */
+    private Node addRecursive(Node current, int value){
+        if(current == null){
+            return new Node(value);
+        }
+
+        if(value < current.value){
+            current.left = addRecursive(current.left, value);
+        } else if(value > current.value){
+            current.right = addRecursive(current.right, value);
+        } else {
+            //value already exists
+            return current;
+        }
+        return current;
+    }
+
+
+    //recursive method to find a node'
+    private boolean containsRecursiveNode(Node current, int value){
+        if(current == null){
+            return false;
+        }
+        if(value == current.value){
+            return true;
+        }
+        return value < current.value
+                ? containsRecursiveNode(current.left, value)
+                : containsRecursiveNode(current.right, value);
+    }
+
+
     public static void main(String[] args) {
         ExactApproach exactApproach = new ExactApproach(new Land(10,8, 50, 20,1000));
         Result solution = exactApproach.solve();
@@ -127,6 +178,23 @@ public class ExactApproach extends Approach {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+
+
+    /**
+     * A Node object has a value, a left child, and a right child
+     */
+    class Node{
+        int value;
+        Node left;
+        Node right;
+
+        Node (int value){
+            this.value = value;
+            right = null;
+            left = null;
+        }
     }
 
 
