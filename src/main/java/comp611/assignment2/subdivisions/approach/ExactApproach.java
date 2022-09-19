@@ -109,6 +109,26 @@ public class ExactApproach extends Approach {
 //        return area;
     }
 
+    public static void main(String[] args) {
+        ExactApproach exactApproach = new ExactApproach(new Land(10,8, 50, 20,1000));
+        Result solution = exactApproach.solve();
+        if(solution != null) {
+            System.out.println("Exact Solution Found: " + solution.getValue());
+            System.out.println("This took " + exactApproach.getTime() + "s");
+            System.out.println("Subdivisions Found: " + exactApproach.getSubdivisions());
+            System.out.println("Solution:\n" + exactApproach.getLand());
+
+        }
+
+        JFrame frame = new JFrame("Land GUI");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        frame.getContentPane().add(new LandGUI(exactApproach, frame));
+        frame.pack();
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
 
 
     /**
@@ -146,7 +166,15 @@ public class ExactApproach extends Approach {
     }
 
 
-    //recursive method to find a node'
+    /**
+     * If the current node is null, return false. If the value is equal to the current node's value, return true.
+     * Otherwise, if the value is less than the current node's value, return the result of calling containsRecursiveNode on
+     * the left node. Otherwise, return the result of calling containsRecursiveNode on the right node
+     *
+     * @param current the current node we're looking at
+     * @param value the value we're looking for
+     * @return The boolean value of whether or not the value is in the tree.
+     */
     private boolean containsRecursiveNode(Node current, int value){
         if(current == null){
             return false;
@@ -159,6 +187,14 @@ public class ExactApproach extends Approach {
                 : containsRecursiveNode(current.right, value);
     }
 
+    /**
+     * If the value is found, delete the node and return the modified tree. If the value is not found, do nothing and
+     * return the unmodified tree
+     *
+     * @param current the current node we're looking at
+     * @param value The value to be deleted
+     * @return The node that is being deleted.
+     */
     private Node deleteRecursive(Node current, int value){
         if(current == null){
             return null;
@@ -188,6 +224,11 @@ public class ExactApproach extends Approach {
         }
     }
 
+    /**
+     * Traverse the left subtree, visit the root, then traverse the right subtree
+     *
+     * @param node The node to start the traversal from.
+     */
     public void traverseInOrder(Node node){
         if(node != null){
             traverseInOrder(node.left);
@@ -196,30 +237,17 @@ public class ExactApproach extends Approach {
         }
     }
 
+    /**
+     * If the left node of the right node is null, then the right node is the smallest value, otherwise, keep going left.
+     *
+     * @param right the right node of the node we want to delete
+     * @return The smallest value in the tree.
+     */
     private int findSmallestValue(Node right) {
         return right.left == null ? right.value : findSmallestValue(right.left);
     }
 
-    public static void main(String[] args) {
-        ExactApproach exactApproach = new ExactApproach(new Land(10,8, 50, 20,1000));
-        Result solution = exactApproach.solve();
-        if(solution != null) {
-            System.out.println("Exact Solution Found: " + solution.getValue());
-            System.out.println("This took " + exactApproach.getTime() + "s");
-            System.out.println("Subdivisions Found: " + exactApproach.getSubdivisions());
-            System.out.println("Solution:\n" + exactApproach.getLand());
 
-        }
-
-        JFrame frame = new JFrame("Land GUI");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        frame.getContentPane().add(new LandGUI(exactApproach, frame));
-        frame.pack();
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
 
 
 
