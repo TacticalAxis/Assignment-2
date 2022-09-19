@@ -75,7 +75,7 @@ public class BruteForceApproach extends Approach {
             return;
         }
 
-//        System.out.println("Value: " + eval(area.getRoot()));
+        // check if area value
         if (eval(area.getRoot()) > eval(bestArea)) {
             bestArea = area.getRoot().copy();
         }
@@ -88,40 +88,49 @@ public class BruteForceApproach extends Approach {
         // breadth-first search
         Set<Subdivision> areaSubdivisions = area.getPossibleSubdivisions().keySet();
         for(Subdivision areaSub : areaSubdivisions) {
+            // add subdivision
             area.subdivide(areaSub);
-            System.out.println("Trying: " + areaSub);
 
             Area a1 = area.getArea1();
             Area a2 = area.getArea2();
 
+            // get possible subdivisions for both areas
             Set<Subdivision> a1subs = a1.getPossibleSubdivisions().keySet();
             Set<Subdivision> a2subs = a2.getPossibleSubdivisions().keySet();
 
+            // check left/upper area
             for(Subdivision area1sub : a1subs) {
                 incrementSubdivisions();
                 a1.subdivide(area1sub);
 
+                // check right/lower area
                 for(Subdivision area2sub : a2subs) {
                     incrementSubdivisions();
                     a2.subdivide(area2sub);
 
+                    // check if area value
                     if(eval(a2.getRoot()) > eval(bestArea)) {
                         bestArea= a2.getRoot().copy();
                     }
 
+                    // check if area value
                     if(eval(a1.getRoot()) > eval(bestArea)) {
                         bestArea= a1.getRoot().copy();
                     }
 
+                    // recurse
                     findSub(a1);
                     findSub(a2);
 
+                    // undo subdivision
                     a2.unSubdivide();
                 }
 
+                // undo subdivision
                 a1.unSubdivide();
             }
 
+            // undo subdivision
             area.unSubdivide();
         }
 

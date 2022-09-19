@@ -6,12 +6,18 @@ import comp611.assignment2.subdivisions.land.Land;
 @SuppressWarnings("unused")
 public abstract class Approach {
 
+    // approach name
     private final String name;
+    // store encapsulating land
     private final Land land;
+    // store completion status
     private boolean complete;
+    // store number of subdivisions made
     private int subdivisions;
 
+    // start time
     private long startTime;
+    // end time
     private long endTime;
 
     public Approach(Land area, String name) {
