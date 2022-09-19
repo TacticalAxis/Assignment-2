@@ -78,7 +78,7 @@ public class RExact extends Approach {
     }
 
     public static void main(String[] args) {
-        RExact exactApproach = new RExact(new Land(6, 3, 20, 20, 1000));
+        RExact exactApproach = new RExact(new Land(7, 7, 0, 20, 1000));
         Result solution = exactApproach.solve();
         if (solution != null) {
             System.out.println("Exact Solution Found: " + solution.getValue());
