@@ -348,4 +348,5 @@ public class Area {
     public Area getParent() {
         return parent;
     }
+
 }
