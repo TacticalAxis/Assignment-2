@@ -268,8 +268,4 @@ public class ExactApproach extends Approach {
             return count;
         }
     }
-
-
-
-
 }

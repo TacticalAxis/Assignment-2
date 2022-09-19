@@ -3,6 +3,7 @@ package comp611.assignment2.subdivisions.gui;
 import comp611.assignment2.subdivisions.approach.Approach;
 import comp611.assignment2.subdivisions.approach.BruteForceApproach;
 import comp611.assignment2.subdivisions.approach.GreedyApproach;
+import comp611.assignment2.subdivisions.approach.RExact;
 import comp611.assignment2.subdivisions.land.Land;
 
 import javax.swing.*;
@@ -97,6 +98,35 @@ public class Menu extends JFrame implements ActionListener {
             approach.solve();
         }).start();
     }
+
+    private void startExact() {
+        if (inProgress) {
+            return;
+        }
+
+        inProgress = true;
+        if(this.extGUI != null) {
+            this.extGUI.dispose();
+            this.extGUI = null;
+        }
+
+        // get area dimensions
+        int width = Integer.parseInt(areaWidthInput.getText());
+        int height = Integer.parseInt(areaHeightInput.getText());
+
+        // create land
+        OptionsDialog.Options o = optionsDialog.getOptions();
+        Land land = new Land(width, height, o.getSubCost(), o.getLandBaseValue(), o.getLandMaxValue());
+
+        // create brute force approach
+        approach = new RExact(land);
+
+        // start brute force
+        new Thread(() -> {
+            System.out.println("Starting exact approach...");
+            approach.solve();
+        }).start();
+    }
                             
     private void initComponents() {
         JLabel mainTitle;
@@ -181,7 +211,7 @@ public class Menu extends JFrame implements ActionListener {
         exactButton.setPreferredSize(new Dimension(160, 40));
         exactButton.addActionListener(evt -> {
             System.out.println("Exact");
-            System.out.println("Button Clicked");
+            startExact();
         });
 
         greedyButton.setFont(new Font("Bahnschrift", Font.PLAIN, 16)); // NOI18N

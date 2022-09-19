@@ -20,6 +20,10 @@ public class Land {
         this.area = area;
     }
 
+    public double getSubValue() {
+        return subValue;
+    }
+
     public double getValue() {
         return area.getValue() - (subValue * area.getAllSubdivisionLength());
     }
