@@ -17,6 +17,16 @@ public class Maths {
 //            valueTable[0][i] = i;
         }
 
+        //for loop that fills the rest of the table
+        //using the formula ( x + y )- 1
+        for (int i = 1; i < height; i++) {
+            for (int j = 1; j < width; j++) {
+                //using the formula ( x + y )- 1
+                //where 2 + 2 - 1 = 3, 4 + 4 - 1 = 7, 8 + 8 - 1 = 15, 2 + 4 - 1
+                valueTable[i][j] = valueTable[i - 1][j] + valueTable[i][j - 1] - valueTable[i - 1][j - 1] - 1;
+            }
+        }
+
 
 //        for (int i = 1; i < height; i++) {
 //            for (int j = 1; j < width; j++) {
