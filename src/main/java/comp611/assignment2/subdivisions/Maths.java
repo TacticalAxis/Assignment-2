@@ -6,12 +6,12 @@ public class Maths {
 
         //for loop that fills the outer edge of numbers
         //from 0,0 to 0,height and 0,0 to width,0
-        for (int i = 0; i < height; i++) {
+        for (int i = 1; i < height; i++) {
             //values would be powers of 2
             valueTable[i][0] = Math.pow(2, i);
 //            valueTable[i][0] = i;
         }
-        for (int i = 0; i < width; i++) {
+        for (int i = 1; i < width; i++) {
             //values would be powers of 2
             valueTable[0][i] = Math.pow(2, i);
 //            valueTable[0][i] = i;
@@ -32,8 +32,6 @@ public class Maths {
 //                }
 //            }
 //        }
-
-
         return valueTable;
     }
 
