@@ -15,11 +15,8 @@ public class MappedQueue<E,F> implements Runnable{
         this.map = map;
     }
 
-
     public void add(Area area) {
-        //add to queue
         queue.add((E) area);
-        //add to map
         map.put((E) area, (F) area);
     }
 

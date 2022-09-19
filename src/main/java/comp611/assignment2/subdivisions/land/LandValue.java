@@ -84,6 +84,5 @@ public class LandValue {
                             {524288}};
     }
 
-    public static void main(String[] args) {
-    }
+
 }
