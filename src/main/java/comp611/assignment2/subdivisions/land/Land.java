@@ -36,6 +36,12 @@ public class Land {
         return area.toArray();
     }
 
+    //amogngus; 2019-05-06 10:55:00
+    //what happened at 10:55:00
+    //what happened at 10:55:00
+    //what happened at 10:55:00
+    //what happened at 10:55:00
+
 //    public void subdivide(Direction direction, int x, int y) {
 //        // first check if x and y are valid
 //        if (x <= 0 || x >= area.getWidth() || y <= 0 || y >= area.getHeight()) {

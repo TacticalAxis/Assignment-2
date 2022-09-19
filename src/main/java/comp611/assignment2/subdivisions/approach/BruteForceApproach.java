@@ -18,7 +18,7 @@ public class BruteForceApproach extends Approach {
     }
 
     public static void main(String[] args) {
-        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 6, 20, 20, 1000));
+        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 3, 20, 20, 1000));
         Result solution = bruteForceApproach.solve();
         if (solution != null) {
             System.out.println("Bruteforce Solution Found: " + solution.getValue());
@@ -85,9 +85,11 @@ public class BruteForceApproach extends Approach {
             return;
         }
 
+        // breadth-first search
         Set<Subdivision> areaSubdivisions = area.getPossibleSubdivisions().keySet();
         for(Subdivision areaSub : areaSubdivisions) {
             area.subdivide(areaSub);
+            System.out.println("Trying: " + areaSub);
 
             Area a1 = area.getArea1();
             Area a2 = area.getArea2();
@@ -119,6 +121,20 @@ public class BruteForceApproach extends Approach {
 
                 a1.unSubdivide();
             }
+
+            area.unSubdivide();
+        }
+
+        // depth-first search
+        for(Subdivision areaSub : areaSubdivisions) {
+            area.subdivide(areaSub);
+
+            if(eval(area.getRoot()) > eval(bestArea)) {
+                bestArea= area.getRoot().copy();
+            }
+
+            findSub(area.getArea1());
+            findSub(area.getArea2());
 
             area.unSubdivide();
         }

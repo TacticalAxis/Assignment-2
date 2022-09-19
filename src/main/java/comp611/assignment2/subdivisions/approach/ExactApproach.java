@@ -6,17 +6,18 @@ import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @SuppressWarnings("unused")
 public class ExactApproach extends Approach {
 
     private Node root;
+
     private int currentLandValue;
     private int subdivisions;
-    private HashMap<Subdivision, Integer> subMap = new HashMap<>();
+
+    private final HashMap<Subdivision, Integer> subMap = new HashMap<>();
+
     public ExactApproach(Land area) {
         super(area, "Exact Approach");
     }
@@ -198,7 +199,6 @@ public class ExactApproach extends Approach {
     private int findSmallestValue(Node right) {
         return right.left == null ? right.value : findSmallestValue(right.left);
     }
-
 
     public static void main(String[] args) {
         ExactApproach exactApproach = new ExactApproach(new Land(10,8, 50, 20,1000));

@@ -318,6 +318,7 @@ public class Menu extends JFrame implements ActionListener {
 
                 if(approach != null) {
                     statusLabel.setText("Finished");
+                    statusLabel.setBorder(new LineBorder(new Color(0, 255, 0), 3, true));
                     timeElapsedLabel.setText("Time elapsed: " + approach.getTime() + "ms");
                     bestValueLabel.setText("Best value: " + approach.getBestValue());
                     subdivisionsMadeLabel.setText("Subdivisions made: " + approach.getSubdivisions());
@@ -345,6 +346,7 @@ public class Menu extends JFrame implements ActionListener {
                     inProgress = false;
                 } else {
                     statusLabel.setText("In progress");
+                    statusLabel.setBorder(new LineBorder(new Color(255, 0, 0), 3, true));
                     timeElapsedLabel.setText("Time elapsed: " + approach.getCurrentTime() + "ms");
                     bestValueLabel.setText("Best value: " + approach.getBestValue());
                     subdivisionsMadeLabel.setText("Subdivisions made: " + approach.getSubdivisions());
