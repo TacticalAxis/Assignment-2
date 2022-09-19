@@ -7,15 +7,14 @@ import comp611.assignment2.subdivisions.land.Subdivision;
 
 import javax.swing.*;
 import java.util.HashMap;
+import java.util.Set;
 
 @SuppressWarnings("unused")
 public class ExactApproach extends Approach {
-
     private Node root;
-
+    private BruteForceApproach bruteForceApproach;
     private int currentLandValue;
     private int subdivisions;
-
     private final HashMap<Subdivision, Integer> subMap = new HashMap<>();
 
     public ExactApproach(Land area) {
@@ -48,6 +47,11 @@ public class ExactApproach extends Approach {
     @Override
     public double getBestValue() {
         return currentLandValue;
+    }
+
+    //get all possible subdivisions
+    public Set getAllSubdivisions(){
+        return bruteForceApproach.getAllSubdivisions();
     }
 
     //recursive method to find all the subdivisions
@@ -98,15 +102,6 @@ public class ExactApproach extends Approach {
         }
         //return the area
         return area;
-//        //get the area
-//        Area area = getLand().getArea();
-//        //loop through the hashmap
-//        for(Subdivision sub : subMap.keySet()) {
-//            //subdivide the area
-//            area.subdivide(sub);
-//        }
-//        //return the area
-//        return area;
     }
 
     public static void main(String[] args) {
@@ -246,9 +241,6 @@ public class ExactApproach extends Approach {
     private int findSmallestValue(Node right) {
         return right.left == null ? right.value : findSmallestValue(right.left);
     }
-
-
-
 
 
     /**

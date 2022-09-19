@@ -6,15 +6,19 @@ import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
 import javax.swing.*;
+import java.util.HashSet;
 import java.util.Set;
 
 public class BruteForceApproach extends Approach {
 
     private Area bestArea;
 
+    public Set<Subdivision> allSubdivisions;
+
     public BruteForceApproach(Land land) {
         super(land, "Brute Force Approach");
         this.bestArea = land.getArea().copy();
+        this.allSubdivisions = new HashSet<>();
     }
 
     public static void main(String[] args) {
@@ -147,5 +151,9 @@ public class BruteForceApproach extends Approach {
 
             area.unSubdivide();
         }
+    }
+
+    public Set<Subdivision> getAllSubdivisions() {
+        return allSubdivisions;
     }
 }
