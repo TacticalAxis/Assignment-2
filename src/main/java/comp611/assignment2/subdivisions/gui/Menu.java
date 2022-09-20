@@ -3,7 +3,7 @@ package comp611.assignment2.subdivisions.gui;
 import comp611.assignment2.subdivisions.approach.Approach;
 import comp611.assignment2.subdivisions.approach.BruteForceApproach;
 import comp611.assignment2.subdivisions.approach.GreedyApproach;
-import comp611.assignment2.subdivisions.approach.RExact;
+import comp611.assignment2.subdivisions.approach.OLDExactApproach;
 import comp611.assignment2.subdivisions.land.Land;
 
 import javax.swing.*;
@@ -58,7 +58,7 @@ public class Menu extends JFrame implements ActionListener {
 
         // create land
         OptionsDialog.Options o = optionsDialog.getOptions();
-        Land land = new Land(width, height, o.getSubCost(), o.getLandBaseValue(), o.getLandMaxValue());
+        Land land = new Land(width, height, o.getSubCost());
 
         // create brute force approach
         approach = new BruteForceApproach(land);
@@ -87,7 +87,7 @@ public class Menu extends JFrame implements ActionListener {
 
         // create land
         OptionsDialog.Options o = optionsDialog.getOptions();
-        Land land = new Land(width, height, o.getSubCost(), o.getLandBaseValue(), o.getLandMaxValue());
+        Land land = new Land(width, height, o.getSubCost());
 
         // create brute force approach
         approach = new GreedyApproach(land);
@@ -116,10 +116,10 @@ public class Menu extends JFrame implements ActionListener {
 
         // create land
         OptionsDialog.Options o = optionsDialog.getOptions();
-        Land land = new Land(width, height, o.getSubCost(), o.getLandBaseValue(), o.getLandMaxValue());
+        Land land = new Land(width, height, o.getSubCost());
 
         // create brute force approach
-        approach = new RExact(land);
+        approach = new OLDExactApproach(land);
 
         // start brute force
         new Thread(() -> {
@@ -166,11 +166,6 @@ public class Menu extends JFrame implements ActionListener {
         areaWidthInput.setHorizontalAlignment(SwingConstants.CENTER);
         areaWidthInput.setText("6");
         areaWidthInput.setPreferredSize(new Dimension(160, 40));
-//        jTextField5.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent evt) {
-//                jTextField5ActionPerformed(evt);
-//            }
-//        });
 
         areaHeightLabel.setFont(new Font("Bahnschrift", Font.PLAIN, 18)); // NOI18N
         areaHeightLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -181,11 +176,6 @@ public class Menu extends JFrame implements ActionListener {
         areaHeightInput.setHorizontalAlignment(SwingConstants.CENTER);
         areaHeightInput.setText("3");
         areaHeightInput.setPreferredSize(new Dimension(160, 40));
-//        jTextField4.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent evt) {
-//                jTextField4ActionPerformed(evt);
-//            }
-//        });
 
         optionsButton.setFont(new Font("Bahnschrift", Font.PLAIN, 18)); // NOI18N
         optionsButton.setHorizontalAlignment(SwingConstants.CENTER);
@@ -232,31 +222,16 @@ public class Menu extends JFrame implements ActionListener {
         timeElapsedLabel.setHorizontalAlignment(SwingConstants.LEFT);
         timeElapsedLabel.setText("Time Elapsed: 0:00");
         timeElapsedLabel.setPreferredSize(new Dimension(160, 40));
-//        jTextField6.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent evt) {
-//                jTextField6ActionPerformed(evt);
-//            }
-//        });
 
         subdivisionsMadeLabel.setFont(new Font("Bahnschrift", Font.PLAIN, 14)); // NOI18N
         subdivisionsMadeLabel.setHorizontalAlignment(SwingConstants.LEFT);
         subdivisionsMadeLabel.setText("Subdivisions Made");
         subdivisionsMadeLabel.setPreferredSize(new Dimension(160, 40));
-//        jTextField7.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent evt) {
-//                jTextField7ActionPerformed(evt);
-//            }
-//        });
 
         bestValueLabel.setFont(new Font("Bahnschrift", Font.PLAIN, 14)); // NOI18N
         bestValueLabel.setHorizontalAlignment(SwingConstants.LEFT);
         bestValueLabel.setText("Best Value: ");
         bestValueLabel.setPreferredSize(new Dimension(160, 40));
-//        jTextField3.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent evt) {
-//                jTextField3ActionPerformed(evt);
-//            }
-//        });
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

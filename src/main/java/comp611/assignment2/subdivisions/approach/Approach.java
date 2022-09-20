@@ -3,7 +3,6 @@ package comp611.assignment2.subdivisions.approach;
 import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
 
-@SuppressWarnings("unused")
 public abstract class Approach {
 
     // approach name

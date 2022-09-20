@@ -8,7 +8,6 @@ import comp611.assignment2.subdivisions.land.Subdivision;
 import javax.swing.*;
 import java.util.Map;
 
-@SuppressWarnings("unused")
 public class GreedyApproach extends Approach {
 
     private double currentLandValue;
@@ -73,7 +72,7 @@ public class GreedyApproach extends Approach {
     }
 
     public static void main(String[] args)  {
-        GreedyApproach greedyApproach = new GreedyApproach(new Land(6, 6, 20, 20,1000));
+        GreedyApproach greedyApproach = new GreedyApproach(new Land(6, 6, 20));
         Result solution = greedyApproach.solve();
         if(solution != null) {
             System.out.println("Greedy Solution Found: " + solution.getValue());

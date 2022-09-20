@@ -84,6 +84,7 @@ public class Area {
     public List<Area> getSubAreas() {
         List<Area> subAreas = new ArrayList<>();
         if(isSubdivided()) {
+            System.out.println("it is subdivided");
             subAreas.addAll(area1.getSubAreas());
             subAreas.addAll(area2.getSubAreas());
         } else {

@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@SuppressWarnings("DuplicatedCode")
 public class BruteForceApproach extends Approach {
 
     private Area bestArea;
@@ -22,7 +23,7 @@ public class BruteForceApproach extends Approach {
     }
 
     public static void main(String[] args) {
-        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 3, 20, 20, 1000));
+        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 1, 20));
         Result solution = bruteForceApproach.solve();
         if (solution != null) {
             System.out.println("Bruteforce Solution Found: " + solution.getValue());
@@ -85,7 +86,7 @@ public class BruteForceApproach extends Approach {
         }
 
         // check area is big enough to subdivide
-        if (area.getWidth() < 2 || area.getHeight() < 2) {
+        if (area.getWidth() < 1 || area.getHeight() < 1) {
             return;
         }
 
@@ -94,6 +95,8 @@ public class BruteForceApproach extends Approach {
         for(Subdivision areaSub : areaSubdivisions) {
             // add subdivision
             area.subdivide(areaSub);
+
+            System.out.println(area.getRoot());
 
             Area a1 = area.getArea1();
             Area a2 = area.getArea2();

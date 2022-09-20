@@ -8,13 +8,13 @@ import comp611.assignment2.subdivisions.land.Subdivision;
 import javax.swing.*;
 import java.util.*;
 
-public class RExact extends Approach {
+public class OLDExactApproach extends Approach {
 
     private Area bestArea;
 
     private final Set<SubdividedArea> areaValues;
 
-    public RExact(Land land) {
+    public OLDExactApproach(Land land) {
         super(land, "Exact Approach");
         this.bestArea = land.getArea().copy();
         this.areaValues = new HashSet<>();
@@ -67,18 +67,11 @@ public class RExact extends Approach {
     }
 
     public boolean check(int a1h, int a1w, int subLength, int a2h, int a2w) {
-        // check that the parameters exist in the set without iterating through the whole set
         return areaValues.contains(new SubdividedArea(a1h, a1w, subLength, a2h, a2w));
-//        for (SubdividedArea area : areaValues) {
-//            if (area.check(a1h, a1w, subLength, a2h, a2w)) {
-//                return true;
-//            }
-//        }
-//        return false;
     }
 
     public static void main(String[] args) {
-        RExact exactApproach = new RExact(new Land(7, 7, 0, 20, 1000));
+        OLDExactApproach exactApproach = new OLDExactApproach(new Land(6, 3, 20));
         Result solution = exactApproach.solve();
         if (solution != null) {
             System.out.println("Exact Solution Found: " + solution.getValue());
@@ -155,15 +148,12 @@ public class RExact extends Approach {
             Area a1 = area.getArea1();
             Area a2 = area.getArea2();
 
-            SubdividedArea s = new SubdividedArea(a1.getHeight(), a1.getWidth(), areaSub.getLength(), a2.getHeight(), a2.getWidth());
-            if(!areaValues.add(s)) {area.unSubdivide(); continue;}
-
-//            if(check(a1.height, a1.width, areaSub.getLength(), a2.height, a2.width)) {
-//                area.unSubdivide();
-//                continue;
-//            } else {
-//                areaValues.add(new SubdividedArea(a1.height, a1.width, areaSub.getLength(), a2.height, a2.width));
-//            }
+            if(check(a1.height, a1.width, areaSub.getLength(), a2.height, a2.width)) {
+                area.unSubdivide();
+                continue;
+            } else {
+                areaValues.add(new SubdividedArea(a1.height, a1.width, areaSub.getLength(), a2.height, a2.width));
+            }
 
             // get possible subdivisions for both areas
             Set<Subdivision> a1subs = a1.getPossibleSubdivisions().keySet();
@@ -177,15 +167,12 @@ public class RExact extends Approach {
                 Area a1a1 = a1.getArea1();
                 Area a1a2 = a1.getArea2();
 
-                SubdividedArea s1 = new SubdividedArea(a1a1.getHeight(), a1a1.getWidth(), area1sub.getLength(), a1a2.getHeight(), a1a2.getWidth());
-                if(!areaValues.add(s1)) {a1.unSubdivide(); continue;}
-
-//                if(check(a1a1.height, a1a1.width, area1sub.getLength(), a1a2.height, a1a2.width)) {
-//                    a1.unSubdivide();
-//                    continue;
-//                } else {
-//                    areaValues.add(new SubdividedArea(a1a1.height, a1a1.width, area1sub.getLength(), a1a2.height, a1a2.width));
-//                }
+                if(check(a1a1.height, a1a1.width, area1sub.getLength(), a1a2.height, a1a2.width)) {
+                    a1.unSubdivide();
+                    continue;
+                } else {
+                    areaValues.add(new SubdividedArea(a1a1.height, a1a1.width, area1sub.getLength(), a1a2.height, a1a2.width));
+                }
 
                 // check right/lower area
                 for(Subdivision area2sub : a2subs) {
@@ -195,15 +182,12 @@ public class RExact extends Approach {
                     Area a2a1 = a2.getArea1();
                     Area a2a2 = a2.getArea2();
 
-                    SubdividedArea s2 = new SubdividedArea(a2a1.getHeight(), a2a1.getWidth(), area2sub.getLength(), a2a2.getHeight(), a2a2.getWidth());
-                    if(!areaValues.add(s2)) {a2.unSubdivide(); continue;}
-
-//                    if(check(a2a1.height, a2a1.width, area2sub.getLength(), a2a2.height, a2a2.width)) {
-//                        a2.unSubdivide();
-//                        continue;
-//                    } else {
-//                        areaValues.add(new SubdividedArea(a2a1.height, a2a1.width, area2sub.getLength(), a2a2.height, a2a2.width));
-//                    }
+                    if(check(a2a1.height, a2a1.width, area2sub.getLength(), a2a2.height, a2a2.width)) {
+                        a2.unSubdivide();
+                        continue;
+                    } else {
+                        areaValues.add(new SubdividedArea(a2a1.height, a2a1.width, area2sub.getLength(), a2a2.height, a2a2.width));
+                    }
 
                     // check if area value
                     if(eval(a2.getRoot()) > eval(bestArea)) {
@@ -245,8 +229,4 @@ public class RExact extends Approach {
             area.unSubdivide();
         }
     }
-
-//    public Set<Subdivision> getAllSubdivisions() {
-//        return allSubdivisions;
-//    }
 }

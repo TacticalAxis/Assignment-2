@@ -13,22 +13,29 @@ import java.awt.event.MouseEvent;
 
 public class LandGUI extends JPanel implements ActionListener {
 
+    // panel to display the land
     private final DrawPanel drawPanel;
 
+    // timer to update subs
     private final Timer timer;
+
+    // details area
     private final JTextArea textArea;
 
+    // width and height of pixels
     private final int pixelWidth;
     private final int pixelHeight;
 
     // constructor
     public LandGUI(Approach approach, JFrame frame) {
+        // settings
         super(new BorderLayout());
-
         setPreferredSize(new Dimension(800, 800));
 
+        // init land data structure
         Land land = approach.getLand();
 
+        // setup pixel width and height
         this.pixelWidth = (int) getPreferredSize().getWidth() / land.getArea().getWidth();
         this.pixelHeight = (int) getPreferredSize().getHeight() / land.getArea().getHeight();
 
@@ -50,6 +57,7 @@ public class LandGUI extends JPanel implements ActionListener {
             }
         });
 
+        // add listener for when mouse is moved over draw panel
         drawPanel.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseMoved(MouseEvent me) {
@@ -97,7 +105,7 @@ public class LandGUI extends JPanel implements ActionListener {
     }
 
     public class DrawPanel extends JPanel {
-
+        // land data structure
         private final Land land;
 
         // draw panel constructor
@@ -112,26 +120,33 @@ public class LandGUI extends JPanel implements ActionListener {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
+            // specific pixel width and height
             int widthSize = drawPanel.getSize().width / land.getArea().width;
             int heightSize = drawPanel.getSize().height / land.getArea().height;
 
+            // init land array to be displayed
             int[][] landArray = land.getArea().toArray();
             int width = landArray[0].length;
             int height = landArray.length;
 
             for(int i = 0; i < height; i++) {
                 for(int j = 0; j < width; j++) {
+                    // gets the hashcode at that part of the array
                     int value = landArray[i][j];
+
+                    // generate colour based on bit shifted value of area hashcode
                     int red = (value >> 16) & 0xFF;
                     int green = (value >> 8) & 0xFF;
                     int blue = value & 0xFF;
+
+                    // colour in the part of the array
                     g.setColor(new Color(red, green, blue));
                     g.fillRect(j * widthSize, i * heightSize, widthSize, heightSize);
                 }
             }
 
             // add some spacing between elements
-            g.setColor(Color.BLACK);
+            g.setColor(Color.WHITE);
             for (int i = 0; i < width; i++) {
                 g.drawLine(i * widthSize, 0, i * widthSize, height * heightSize);
             }

@@ -6,113 +6,29 @@ import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
 import javax.swing.*;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
-@SuppressWarnings("unused")
 public class ExactApproach extends Approach {
-    private Node root;
-    private BruteForceApproach bruteForceApproach;
-    private int currentLandValue;
-    private int subdivisions;
-    private final HashMap<Subdivision, Integer> subMap = new HashMap<>();
 
-    public ExactApproach(Land area) {
-        super(area, "Exact Approach");
-    }
+    private Area bestArea;
 
-    @Override
-    public Result solve() {
-        startTimer();
+    public Set<Subdivision> allSubdivisions;
 
-        //recursive search
-        findSubDivisions(getLand().getArea());
-
-        stopTimer();
-
-        //call the solution method
-        Area area = getSolution();
-        if(area != null) {
-            //solution found
-            getLand().setArea(area);
-
-            //return result
-            return new Result(this, area.getLand().getValue(), getSubdivisions());
-        }
-
-        //no solution found
-        return null;
-    }
-
-    @Override
-    public double getBestValue() {
-        return currentLandValue;
-    }
-
-    //get all possible subdivisions
-    public Set getAllSubdivisions(){
-        return bruteForceApproach.getAllSubdivisions();
-    }
-
-    //recursive method to find all the subdivisions
-    private void findSubDivisions(Area area) {
-        //get all the subdivisions
-        //loop through all the subdivisions
-        for(Subdivision sub : area.getPossibleSubdivisions().keySet()) {
-            //subdivide the area
-            area.subdivide(sub);
-            //increment the subdivisions
-            incrementSubdivisions();
-            //add the subdivision to the hashmap
-            subMap.put(sub, subdivisions);
-            //check if the value is greater than the current value
-            if(area.getLand().getValue() > currentLandValue) {
-                //if it is, set the current value to the new value
-                currentLandValue = (int) area.getLand().getValue();
-                //call the recursive method again
-                findSubDivisions(area.getArea1());
-                findSubDivisions(area.getArea2());
-            } else {
-                //if it is not, unSubdivide the area
-                area.unSubdivide();
-                //remove the subdivision from the hashmap
-                subMap.remove(sub);
-                //decrement the subdivisions
-                subdivisions--;
-            }
-        }
-    }
-
-    //method to get the solution
-    private Area getSolution() {
-        //get the area
-        Area area = getLand().getArea();
-        //loop through the hashmap
-        for(Subdivision sub : subMap.keySet()) {
-            //compare the area with the best area found
-            if(area.getValue() > currentLandValue) {
-                //if it is, return the area
-                return area;
-            } else {
-                //if it is not, subdivide the area
-                area.subdivide(sub);
-                //call the recursive method again
-                area = getSolution();
-            }
-        }
-        //return the area
-        return area;
+    public ExactApproach(Land land) {
+        super(land, "Brute Force Approach");
+        this.bestArea = land.getArea().copy();
+        this.allSubdivisions = new HashSet<>();
     }
 
     public static void main(String[] args) {
-        ExactApproach exactApproach = new ExactApproach(new Land(10,8, 50, 20,1000));
+        ExactApproach exactApproach = new ExactApproach(new Land(6, 1, 20));
         Result solution = exactApproach.solve();
-        if(solution != null) {
-            System.out.println("Exact Solution Found: " + solution.getValue());
-            System.out.println("This took " + exactApproach.getTime() + "s");
+        if (solution != null) {
+            System.out.println("Bruteforce Solution Found: " + solution.getValue());
+            System.out.println("This took " + exactApproach.getTime() + "ms");
             System.out.println("Subdivisions Found: " + exactApproach.getSubdivisions());
             System.out.println("Solution:\n" + exactApproach.getLand());
-
         }
 
         JFrame frame = new JFrame("Land GUI");
@@ -125,147 +41,121 @@ public class ExactApproach extends Approach {
         frame.setVisible(true);
     }
 
+    @Override
+    public Result solve() {
+        // reset complete flag
+        setComplete(false);
 
-    /**
-     * If the root is null, create a new node and return it. If the root is not null, then recursively call the add method
-     * on the left or right subtree depending on the value you want to insert
-     *
-     * @param value The value to be added to the tree.
-     */
-    public void add(int value){
-        root = addRecursive(root, value);
-    }
+        // start timer
+        startTimer();
 
-    /**
-     * If the value is less than the current node, go left. If the value is greater than the current node, go right. If the
-     * value is equal to the current node, do nothing
-     *
-     * @param current The current node we are looking at.
-     * @param value The value to be added to the tree.
-     * @return The current node.
-     */
-    private Node addRecursive(Node current, int value){
-        if(current == null){
-            return new Node(value);
-        }
+        // start recursive search
+        findSub(getLand().getArea());
 
-        if(value < current.value){
-            current.left = addRecursive(current.left, value);
-        } else if(value > current.value){
-            current.right = addRecursive(current.right, value);
+        getLand().setArea(bestArea);
+
+        // stop timer
+        stopTimer();
+
+        // set complete
+        setComplete(true);
+
+        if (bestArea != null) {
+            return new Result(this, eval(bestArea), getSubdivisions());
         } else {
-            //value already exists
-            return current;
-        }
-        return current;
-    }
-
-
-    /**
-     * If the current node is null, return false. If the value is equal to the current node's value, return true.
-     * Otherwise, if the value is less than the current node's value, return the result of calling containsRecursiveNode on
-     * the left node. Otherwise, return the result of calling containsRecursiveNode on the right node
-     *
-     * @param current the current node we're looking at
-     * @param value the value we're looking for
-     * @return The boolean value of whether or not the value is in the tree.
-     */
-    private boolean containsRecursiveNode(Node current, int value){
-        if(current == null){
-            return false;
-        }
-        if(value == current.value){
-            return true;
-        }
-        return value < current.value
-                ? containsRecursiveNode(current.left, value)
-                : containsRecursiveNode(current.right, value);
-    }
-
-    /**
-     * If the value is found, delete the node and return the modified tree. If the value is not found, do nothing and
-     * return the unmodified tree
-     *
-     * @param current the current node we're looking at
-     * @param value The value to be deleted
-     * @return The node that is being deleted.
-     */
-    private Node deleteRecursive(Node current, int value){
-        if(current == null){
             return null;
         }
+    }
 
-        if(value == current.value){
-            //code to remove the node
-            switch (current.getNumberOfChildren()){
-                case 0:
-                    return null;
-                case 1:
-                    return current.left == null ? current.right : current.left;
-                case 2:
-                    int smallestValue = findSmallestValue(current.right);
-                    current.value = smallestValue;
-                    current.right = deleteRecursive(current.right, smallestValue);
-                    return current;
-            }
+    @Override
+    public double getBestValue() {
+        return eval(bestArea);
+    }
+
+    // single-level
+    private void findSub(Area area) {
+        // check area not null
+        if (area == null) {
+            return;
         }
 
-        if(value < current.value){
-            current.left = deleteRecursive(current.left, value);
-            return current;
-        }else{
-            current.right = deleteRecursive(current.right, value);
-            return current;
+        // check if area value
+        if (eval(area.getRoot()) > eval(bestArea)) {
+            bestArea = area.getRoot().copy();
+        }
+
+        // check area is big enough to subdivide
+        if (area.getWidth() < 1 || area.getHeight() < 1) {
+            return;
+        }
+
+        // breadth-first search
+        Set<Subdivision> areaSubdivisions = area.getPossibleSubdivisions().keySet();
+        for(Subdivision areaSub : areaSubdivisions) {
+            // add subdivision
+            area.subdivide(areaSub);
+
+            System.out.println(area.getRoot());
+
+            Area a1 = area.getArea1();
+            Area a2 = area.getArea2();
+
+            // get possible subdivisions for both areas
+            Set<Subdivision> a1subs = a1.getPossibleSubdivisions().keySet();
+            Set<Subdivision> a2subs = a2.getPossibleSubdivisions().keySet();
+
+            // check left/upper area
+            for(Subdivision area1sub : a1subs) {
+                incrementSubdivisions();
+                a1.subdivide(area1sub);
+
+                // check right/lower area
+                for(Subdivision area2sub : a2subs) {
+                    incrementSubdivisions();
+                    a2.subdivide(area2sub);
+
+                    // check if area value
+                    if(eval(a2.getRoot()) > eval(bestArea)) {
+                        bestArea= a2.getRoot().copy();
+                    }
+
+                    // check if area value
+                    if(eval(a1.getRoot()) > eval(bestArea)) {
+                        bestArea= a1.getRoot().copy();
+                    }
+
+                    // recurse
+                    findSub(a1);
+                    findSub(a2);
+
+                    // undo subdivision
+                    a2.unSubdivide();
+                }
+
+                // undo subdivision
+                a1.unSubdivide();
+            }
+
+            // undo subdivision
+            area.unSubdivide();
+        }
+
+        // depth-first search
+        for(Subdivision areaSub : areaSubdivisions) {
+            area.subdivide(areaSub);
+
+            if(eval(area.getRoot()) > eval(bestArea)) {
+                bestArea= area.getRoot().copy();
+            }
+
+            findSub(area.getArea1());
+            findSub(area.getArea2());
+
+            area.unSubdivide();
         }
     }
 
-    /**
-     * Traverse the left subtree, visit the root, then traverse the right subtree
-     *
-     * @param node The node to start the traversal from.
-     */
-    public void traverseInOrder(Node node){
-        if(node != null){
-            traverseInOrder(node.left);
-            System.out.print(" " + node.value);
-            traverseInOrder(node.right);
-        }
-    }
-
-    /**
-     * If the left node of the right node is null, then the right node is the smallest value, otherwise, keep going left.
-     *
-     * @param right the right node of the node we want to delete
-     * @return The smallest value in the tree.
-     */
-    private int findSmallestValue(Node right) {
-        return right.left == null ? right.value : findSmallestValue(right.left);
-    }
-
-
-    /**
-     * A Node object has a value, a left child, and a right child
-     */
-    class Node{
-        int value;
-        Node left;
-        Node right;
-
-        Node (int value){
-            this.value = value;
-            right = null;
-            left = null;
-        }
-
-        public int getNumberOfChildren() {
-            int count = 0;
-            if(left != null){
-                count++;
-            }
-            if(right != null){
-                count++;
-            }
-            return count;
-        }
+    public Set<Subdivision> getAllSubdivisions() {
+        return allSubdivisions;
     }
 }

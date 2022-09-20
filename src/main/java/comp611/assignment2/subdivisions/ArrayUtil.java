@@ -34,9 +34,6 @@ public class ArrayUtil {
         int[] test1Array = convertTo1DArray(test1);
         int[] test2Array = convertTo1DArray(test2);
 
-//        System.out.println(Arrays.toString(test1Array));
-//        System.out.println(Arrays.toString(test2Array));
-
         HashMap<Integer, Integer> map = new HashMap<>();
         for(int i = 0; i < test1Array.length; i++) {
             if(!map.containsKey(test1Array[i])) {
