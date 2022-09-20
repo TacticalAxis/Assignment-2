@@ -1,44 +1,23 @@
 package comp611.assignment2.subdivisions.approach;
 
-import comp611.assignment2.subdivisions.gui.LandGUI;
 import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
-import javax.swing.*;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
 
+@SuppressWarnings("DuplicatedCode")
 public class ExactApproach extends Approach {
 
+    private final HashMap<AreaSet, Double> areas;
     private Area bestArea;
 
-    public Set<Subdivision> allSubdivisions;
-
     public ExactApproach(Land land) {
-        super(land, "Brute Force Approach");
+        super(land, "Exact Approach");
         this.bestArea = land.getArea().copy();
-        this.allSubdivisions = new HashSet<>();
-    }
-
-    public static void main(String[] args) {
-        ExactApproach exactApproach = new ExactApproach(new Land(6, 1, 20));
-        Result solution = exactApproach.solve();
-        if (solution != null) {
-            System.out.println("Bruteforce Solution Found: " + solution.getValue());
-            System.out.println("This took " + exactApproach.getTime() + "ms");
-            System.out.println("Subdivisions Found: " + exactApproach.getSubdivisions());
-            System.out.println("Solution:\n" + exactApproach.getLand());
-        }
-
-        JFrame frame = new JFrame("Land GUI");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        frame.getContentPane().add(new LandGUI(exactApproach, frame));
-        frame.pack();
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        this.areas = new HashMap<>();
     }
 
     @Override
@@ -60,11 +39,7 @@ public class ExactApproach extends Approach {
         // set complete
         setComplete(true);
 
-        if (bestArea != null) {
-            return new Result(this, eval(bestArea), getSubdivisions());
-        } else {
-            return null;
-        }
+        return (bestArea != null) ? new Result(this, eval(bestArea), getSubdivisions()) : null;
     }
 
     @Override
@@ -91,37 +66,65 @@ public class ExactApproach extends Approach {
 
         // breadth-first search
         Set<Subdivision> areaSubdivisions = area.getPossibleSubdivisions().keySet();
-        for(Subdivision areaSub : areaSubdivisions) {
+        for (Subdivision areaSub : areaSubdivisions) {
             // add subdivision
             area.subdivide(areaSub);
 
-            System.out.println(area.getRoot());
-
             Area a1 = area.getArea1();
             Area a2 = area.getArea2();
+
+            AreaSet areaSet = new AreaSet(a1.getHeight(), a1.getWidth(), a2.getHeight(), a2.getWidth(), areaSub.getLength());
+            if (areas.containsKey(areaSet)) {
+                area.unSubdivide();
+                continue;
+            } else {
+                areas.put(areaSet, eval(area));
+            }
 
             // get possible subdivisions for both areas
             Set<Subdivision> a1subs = a1.getPossibleSubdivisions().keySet();
             Set<Subdivision> a2subs = a2.getPossibleSubdivisions().keySet();
 
             // check left/upper area
-            for(Subdivision area1sub : a1subs) {
+            for (Subdivision area1sub : a1subs) {
                 incrementSubdivisions();
                 a1.subdivide(area1sub);
 
+                Area a1a1 = a1.getArea1();
+                Area a1a2 = a1.getArea2();
+
+                AreaSet areaSet1 = new AreaSet(a1a1.getHeight(), a1a1.getWidth(), a1a2.getHeight(), a1a2.getWidth(), area1sub.getLength());
+                if (areas.containsKey(areaSet1)) {
+                    a1.unSubdivide();
+                    continue;
+                } else {
+                    areas.put(areaSet1, eval(a1));
+                }
+
                 // check right/lower area
-                for(Subdivision area2sub : a2subs) {
+                for (Subdivision area2sub : a2subs) {
                     incrementSubdivisions();
                     a2.subdivide(area2sub);
 
-                    // check if area value
-                    if(eval(a2.getRoot()) > eval(bestArea)) {
-                        bestArea= a2.getRoot().copy();
+                    Area a2a1 = a2.getArea1();
+                    Area a2a2 = a2.getArea2();
+
+                    AreaSet areaSet2 = new AreaSet(a2a1.getHeight(), a2a1.getWidth(), a2a2.getHeight(), a2a2.getWidth(), area2sub.getLength());
+                    if (areas.containsKey(areaSet2)) {
+                        a2.unSubdivide();
+                        continue;
+                    } else {
+                        areas.put(areaSet2, eval(a2));
                     }
 
                     // check if area value
-                    if(eval(a1.getRoot()) > eval(bestArea)) {
-                        bestArea= a1.getRoot().copy();
+                    if (eval(a2.getRoot()) > eval(bestArea)) {
+                        bestArea = a2.getRoot().copy();
+                    }
+
+                    // check if area value
+                    if (eval(a1.getRoot()) > eval(bestArea)) {
+                        bestArea = a1.getRoot().copy();
                     }
 
                     // recurse
@@ -141,11 +144,22 @@ public class ExactApproach extends Approach {
         }
 
         // depth-first search
-        for(Subdivision areaSub : areaSubdivisions) {
+        for (Subdivision areaSub : areaSubdivisions) {
             area.subdivide(areaSub);
 
-            if(eval(area.getRoot()) > eval(bestArea)) {
-                bestArea= area.getRoot().copy();
+            Area a1 = area.getArea1();
+            Area a2 = area.getArea2();
+
+            AreaSet areaSet = new AreaSet(a1.getHeight(), a1.getWidth(), a2.getHeight(), a2.getWidth(), areaSub.getLength());
+            if (areas.containsKey(areaSet)) {
+                area.unSubdivide();
+                continue;
+            } else {
+                areas.put(areaSet, eval(area));
+            }
+
+            if (eval(area.getRoot()) > eval(bestArea)) {
+                bestArea = area.getRoot().copy();
             }
 
             findSub(area.getArea1());
@@ -155,7 +169,43 @@ public class ExactApproach extends Approach {
         }
     }
 
-    public Set<Subdivision> getAllSubdivisions() {
-        return allSubdivisions;
+    private static class AreaSet {
+        private final int a1h;
+        private final int a1w;
+        private final int a2h;
+        private final int a2w;
+        private final int subLength;
+
+        public AreaSet(int a1h, int a1w, int a2h, int a2w, int subLength) {
+            this.a1h = a1h;
+            this.a1w = a1w;
+            this.a2h = a2h;
+            this.a2w = a2w;
+            this.subLength = subLength;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            AreaSet areaSet = (AreaSet) o;
+            return a1h == areaSet.a1h && a1w == areaSet.a1w && a2h == areaSet.a2h && a2w == areaSet.a2w && subLength == areaSet.subLength;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(a1h, a1w, a2h, a2w, subLength);
+        }
+
+        @Override
+        public String toString() {
+            return "AreaSet{" +
+                    "a1h=" + a1h +
+                    ", a1w=" + a1w +
+                    ", a2h=" + a2h +
+                    ", a2w=" + a2w +
+                    ", subLength=" + subLength +
+                    '}';
+        }
     }
 }

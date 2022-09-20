@@ -28,14 +28,17 @@ public abstract class Approach {
         this.subdivisions = 0;
     }
 
+    // subdivision incrementer
     public synchronized void incrementSubdivisions() {
         subdivisions++;
     }
 
+    // get subdivisions
     public synchronized int getSubdivisions() {
         return subdivisions;
     }
 
+    // abstract functions
     public abstract Result solve();
     public abstract double getBestValue();
 
@@ -63,6 +66,7 @@ public abstract class Approach {
         return getLand().getValue(area);
     }
 
+    // get current time
     public synchronized double getCurrentTime() {
         return Math.round(((System.nanoTime() - startTime) / 1000000.0) * 100.0) / 100.0;
     }

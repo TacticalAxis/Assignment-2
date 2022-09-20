@@ -1,6 +1,6 @@
 package comp611.assignment2.subdivisions.land;
 
-import comp611.assignment2.subdivisions.ArrayUtil;
+import comp611.assignment2.subdivisions.util.ArrayUtil;
 
 import java.util.*;
 
@@ -40,6 +40,11 @@ public class Area {
         this.subdivision = null;
     }
 
+    // get current subdivision
+    public Subdivision getSubdivision() {
+        return subdivision;
+    }
+
     // make copy constructor
     public Area(Area area) {
         this.land = area.land;
@@ -65,14 +70,16 @@ public class Area {
         return area2;
     }
 
+    // recursively get value
     public double getValue() {
         if(isSubdivided()) {
-            return area1.getValue() + area2.getValue();
+            return area1.getValue() + area2.getValue() - (land.getSubValue() * subdivision.getLength());
         } else {
             return land.getLandValue().getValue(width, height);
         }
     }
 
+    // check if fully subdivided
     public boolean isFullySubdivided() {
         if (isSubdivided()) {
             return area1.isFullySubdivided() && area2.isFullySubdivided();
@@ -81,17 +88,16 @@ public class Area {
         }
     }
 
+    // get all sub areas
     public List<Area> getSubAreas() {
         List<Area> subAreas = new ArrayList<>();
         if(isSubdivided()) {
-            System.out.println("it is subdivided");
             subAreas.addAll(area1.getSubAreas());
             subAreas.addAll(area2.getSubAreas());
         } else {
             if(this.height > 1 && this.width > 1) {
                 subAreas.add(this);
             }
-//            subAreas.add(this);
         }
         return subAreas;
     }
@@ -104,9 +110,9 @@ public class Area {
         return !isSubdivided() && width > 1 && height > 1;
     }
 
+    // get possible subdivisions and their values
     public Map<Subdivision, Double> getPossibleSubdivisions() {
         HashMap<Subdivision, Double> possibleSubdivisions = new HashMap<>();
-//        List<Subdivision> subdivisions = new ArrayList<>();
 
         if (isSubdivided()) {return possibleSubdivisions;}
 
@@ -133,6 +139,7 @@ public class Area {
         return possibleSubdivisions;
     }
 
+    // convert to array form
     public int[][] toArray() {
         int[][] array = new int[height][width];
 
@@ -164,20 +171,7 @@ public class Area {
         return array;
     }
 
-//    public void subdivide(Direction direction, int x, int y) {
-//        // first check if x and y are valid
-//        if (x <= 0 || x >= getWidth() || y <= 0 || y >= getHeight()) {
-//            throw new IllegalArgumentException("x and y must be within the area: x=" + x + ", y=" + y);
-//        }
-//
-//        Area a = findAreaWithCoordinates(x, y);
-//        if (a == null) {
-//            throw new IllegalArgumentException("x and y must be within the area (a is null): x=" + x + ", y=" + y);
-//        }
-//
-//        a.subdivide(new Subdivision(a, direction, x, y));
-//    }
-
+    // subdivide
     public void subdivide(Subdivision subdivision) {
         // if area size is 1, then it cannot be subdivided
         if (width == 1 && height == 1) {
@@ -230,6 +224,7 @@ public class Area {
         subdivision = null;
     }
 
+    // locate subarea at given coordinates
     public Area findAreaWithCoordinates(int x, int y) {
         if (x < xCoordinate || x >= xCoordinate + width || y < yCoordinate || y >= yCoordinate + height) {
             return null;
@@ -271,6 +266,7 @@ public class Area {
         return subdivisions;
     }
 
+    // get total subdivisions
     public int getAllSubdivisionLength() {
         int length = 0;
         if (isSubdivided()) {
@@ -281,6 +277,7 @@ public class Area {
         return length;
     }
 
+    // compare subdivisions
     private boolean compareSubdivisions(List<Subdivision> subdivisions) {
         List<Subdivision> thisSubdivisions = getSubdivisions();
         if (subdivisions.size() != thisSubdivisions.size()) {
@@ -349,5 +346,4 @@ public class Area {
     public Area getParent() {
         return parent;
     }
-
 }

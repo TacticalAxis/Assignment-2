@@ -1,4 +1,4 @@
-package comp611.assignment2.subdivisions;
+package comp611.assignment2.subdivisions.util;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,8 +21,8 @@ public class ArrayUtil {
                 {1338668845, 1338668845, 1338668845, 666641942, 666641942, 666641942},
                 {1338668845, 1338668845, 1338668845, 666641942, 666641942, 666641942}};
 
-        System.out.println(areTheyTheSame(test1, test2));
-        System.out.println(areTheyTheSame(test1, test3));
+//        System.out.println(areTheyTheSame(test1, test2));
+//        System.out.println(areTheyTheSame(test1, test3));
     }
 
     public static boolean areTheyTheSame(int[][] test1, int[][] test2) {

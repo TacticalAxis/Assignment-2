@@ -1,11 +1,9 @@
 package comp611.assignment2.subdivisions.approach;
 
-import comp611.assignment2.subdivisions.gui.LandGUI;
 import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
-import javax.swing.*;
 import java.util.Map;
 
 public class GreedyApproach extends Approach {
@@ -23,7 +21,6 @@ public class GreedyApproach extends Approach {
         startTimer();
 
         // start search
-        System.out.println("Starting off with value: " + getLand().getValue());
         sub(getLand().getArea());
         setComplete(true);
 
@@ -41,18 +38,29 @@ public class GreedyApproach extends Approach {
     private void sub(Area area) {
         Subdivision sub = findBest(area);
         if (sub != null) {
+            // subdivision found
             area.subdivide(sub);
+
+            // check if we have a better value
             if(area.getLand().getValue() > getBestValue()) {
+
+                // inc sub
                 incrementSubdivisions();
+
+                // update best value
                 currentLandValue = getLand().getValue();
+
+                // recurse
                 sub(area.getArea1());
                 sub(area.getArea2());
             } else {
+                // undo subdivision
                 area.unSubdivide();
             }
         }
     }
 
+    // find the best subdivision for the given area
     private Subdivision findBest(Area area) {
         if(area != null) {
             Subdivision best = null;
@@ -69,25 +77,5 @@ public class GreedyApproach extends Approach {
         }
 
         return null;
-    }
-
-    public static void main(String[] args)  {
-        GreedyApproach greedyApproach = new GreedyApproach(new Land(6, 6, 20));
-        Result solution = greedyApproach.solve();
-        if(solution != null) {
-            System.out.println("Greedy Solution Found: " + solution.getValue());
-            System.out.println("This took " + greedyApproach.getTime() + "ms");
-            System.out.println("Subdivisions Found: " + greedyApproach.getSubdivisions());
-            System.out.println("Solution:\n" + greedyApproach.getLand());
-        }
-
-        JFrame frame = new JFrame("Land GUI");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        frame.getContentPane().add(new LandGUI(greedyApproach, frame));
-        frame.pack();
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
     }
 }

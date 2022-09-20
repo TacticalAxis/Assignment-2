@@ -1,9 +1,6 @@
 package comp611.assignment2.subdivisions.gui;
 
-import comp611.assignment2.subdivisions.approach.Approach;
-import comp611.assignment2.subdivisions.approach.BruteForceApproach;
-import comp611.assignment2.subdivisions.approach.GreedyApproach;
-import comp611.assignment2.subdivisions.approach.OLDExactApproach;
+import comp611.assignment2.subdivisions.approach.*;
 import comp611.assignment2.subdivisions.land.Land;
 
 import javax.swing.*;
@@ -56,6 +53,12 @@ public class Menu extends JFrame implements ActionListener {
         int width = Integer.parseInt(areaWidthInput.getText());
         int height = Integer.parseInt(areaHeightInput.getText());
 
+        if(width < 1 || height < 1 || width > 20 || height > 20) {
+            JOptionPane.showMessageDialog(this, "Area dimensions must be between 1 and 20 inclusive!", "Error", JOptionPane.ERROR_MESSAGE);
+            inProgress = false;
+            return;
+        }
+
         // create land
         OptionsDialog.Options o = optionsDialog.getOptions();
         Land land = new Land(width, height, o.getSubCost());
@@ -64,10 +67,7 @@ public class Menu extends JFrame implements ActionListener {
         approach = new BruteForceApproach(land);
 
         // start brute force
-        new Thread(() -> {
-            System.out.println("Starting brute force...");
-            approach.solve();
-        }).start();
+        new Thread(() -> approach.solve()).start();
     }
 
     private void startGreedy() {
@@ -85,6 +85,12 @@ public class Menu extends JFrame implements ActionListener {
         int width = Integer.parseInt(areaWidthInput.getText());
         int height = Integer.parseInt(areaHeightInput.getText());
 
+        if(width < 1 || height < 1 || width > 20 || height > 20) {
+            JOptionPane.showMessageDialog(this, "Area dimensions must be between 1 and 20 inclusive!", "Error", JOptionPane.ERROR_MESSAGE);
+            inProgress = false;
+            return;
+        }
+
         // create land
         OptionsDialog.Options o = optionsDialog.getOptions();
         Land land = new Land(width, height, o.getSubCost());
@@ -93,10 +99,7 @@ public class Menu extends JFrame implements ActionListener {
         approach = new GreedyApproach(land);
 
         // start brute force
-        new Thread(() -> {
-            System.out.println("Starting brute force...");
-            approach.solve();
-        }).start();
+        new Thread(() -> approach.solve()).start();
     }
 
     private void startExact() {
@@ -114,18 +117,21 @@ public class Menu extends JFrame implements ActionListener {
         int width = Integer.parseInt(areaWidthInput.getText());
         int height = Integer.parseInt(areaHeightInput.getText());
 
+        if(width < 1 || height < 1 || width > 20 || height > 20) {
+            JOptionPane.showMessageDialog(this, "Area dimensions must be between 1 and 20 inclusive!", "Error", JOptionPane.ERROR_MESSAGE);
+            inProgress = false;
+            return;
+        }
+
         // create land
         OptionsDialog.Options o = optionsDialog.getOptions();
         Land land = new Land(width, height, o.getSubCost());
 
         // create brute force approach
-        approach = new OLDExactApproach(land);
+        approach = new ExactApproach(land);
 
         // start brute force
-        new Thread(() -> {
-            System.out.println("Starting exact approach...");
-            approach.solve();
-        }).start();
+        new Thread(() -> approach.solve()).start();
     }
                             
     private void initComponents() {
@@ -182,7 +188,6 @@ public class Menu extends JFrame implements ActionListener {
         optionsButton.setText("Options");
         optionsButton.setPreferredSize(new Dimension(160, 40));
         optionsButton.addActionListener(evt -> {
-            System.out.println("Options button clicked");
             optionsDialog.setSize(250, 120);
             optionsDialog.setVisible(true);
             optionsDialog.getOptions();
@@ -191,26 +196,17 @@ public class Menu extends JFrame implements ActionListener {
         bruteforceButton.setFont(new Font("Bahnschrift", Font.PLAIN, 16)); // NOI18N
         bruteforceButton.setText("Bruteforce");
         bruteforceButton.setPreferredSize(new Dimension(160, 40));
-        bruteforceButton.addActionListener(evt -> {
-            System.out.println("Bruteforce");
-            startBruteForce();
-        });
+        bruteforceButton.addActionListener(evt -> startBruteForce());
 
         exactButton.setFont(new Font("Bahnschrift", Font.PLAIN, 16)); // NOI18N
         exactButton.setText("Exact");
         exactButton.setPreferredSize(new Dimension(160, 40));
-        exactButton.addActionListener(evt -> {
-            System.out.println("Exact");
-            startExact();
-        });
+        exactButton.addActionListener(evt -> startExact());
 
         greedyButton.setFont(new Font("Bahnschrift", Font.PLAIN, 16)); // NOI18N
         greedyButton.setText("Greedy");
         greedyButton.setPreferredSize(new Dimension(160, 40));
-        greedyButton.addActionListener(evt -> {
-            System.out.println("Greedy");
-            startGreedy();
-        });
+        greedyButton.addActionListener(evt -> startGreedy());
 
         statusLabel.setFont(new Font("Bahnschrift", Font.PLAIN, 18)); // NOI18N
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -364,19 +360,5 @@ public class Menu extends JFrame implements ActionListener {
                 }
             }
         }
-    }
-
-
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            System.out.println("Error: GUI look and feel not found.");
-        }
-
-        EventQueue.invokeLater(() -> {
-            new Menu().setVisible(true);
-            System.out.println("GUI started.");
-        });
     }
 }

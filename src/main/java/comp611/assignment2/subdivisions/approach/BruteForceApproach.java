@@ -1,12 +1,9 @@
 package comp611.assignment2.subdivisions.approach;
 
-import comp611.assignment2.subdivisions.gui.LandGUI;
 import comp611.assignment2.subdivisions.land.Area;
 import comp611.assignment2.subdivisions.land.Land;
 import comp611.assignment2.subdivisions.land.Subdivision;
 
-import javax.swing.*;
-import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("DuplicatedCode")
@@ -14,32 +11,9 @@ public class BruteForceApproach extends Approach {
 
     private Area bestArea;
 
-    public Set<Subdivision> allSubdivisions;
-
     public BruteForceApproach(Land land) {
         super(land, "Brute Force Approach");
         this.bestArea = land.getArea().copy();
-        this.allSubdivisions = new HashSet<>();
-    }
-
-    public static void main(String[] args) {
-        BruteForceApproach bruteForceApproach = new BruteForceApproach(new Land(6, 1, 20));
-        Result solution = bruteForceApproach.solve();
-        if (solution != null) {
-            System.out.println("Bruteforce Solution Found: " + solution.getValue());
-            System.out.println("This took " + bruteForceApproach.getTime() + "ms");
-            System.out.println("Subdivisions Found: " + bruteForceApproach.getSubdivisions());
-            System.out.println("Solution:\n" + bruteForceApproach.getLand());
-        }
-
-        JFrame frame = new JFrame("Land GUI");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        frame.getContentPane().add(new LandGUI(bruteForceApproach, frame));
-        frame.pack();
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
     }
 
     @Override
@@ -61,11 +35,7 @@ public class BruteForceApproach extends Approach {
         // set complete
         setComplete(true);
 
-        if (bestArea != null) {
-            return new Result(this, eval(bestArea), getSubdivisions());
-        } else {
-            return null;
-        }
+        return (bestArea != null) ? new Result(this, eval(bestArea), getSubdivisions()) : null;
     }
 
     @Override
@@ -95,8 +65,6 @@ public class BruteForceApproach extends Approach {
         for(Subdivision areaSub : areaSubdivisions) {
             // add subdivision
             area.subdivide(areaSub);
-
-            System.out.println(area.getRoot());
 
             Area a1 = area.getArea1();
             Area a2 = area.getArea2();
@@ -154,9 +122,5 @@ public class BruteForceApproach extends Approach {
 
             area.unSubdivide();
         }
-    }
-
-    public Set<Subdivision> getAllSubdivisions() {
-        return allSubdivisions;
     }
 }

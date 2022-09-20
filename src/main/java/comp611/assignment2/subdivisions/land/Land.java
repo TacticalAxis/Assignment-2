@@ -25,11 +25,11 @@ public class Land {
     }
 
     public double getValue() {
-        return area.getValue() - (subValue * area.getAllSubdivisionLength());
+        return area.getValue();// - (subValue * area.getAllSubdivisionLength());
     }
 
     public double getValue(Area a) {
-        return a.getValue() - (subValue * a.getAllSubdivisionLength());
+        return a.getValue();// - (subValue * a.getAllSubdivisionLength());
     }
 
     public Area getArea() {

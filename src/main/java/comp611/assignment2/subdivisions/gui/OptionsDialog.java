@@ -16,7 +16,7 @@ class OptionsDialog extends JDialog {
         subdivisionCostLabel = new JLabel("Subdivision Cost");
         subdivisionCostLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        subdivisionCostInput = new JTextField("50");
+        subdivisionCostInput = new JTextField("20");
 
         this.add(subdivisionCostLabel);
         this.add(subdivisionCostInput);

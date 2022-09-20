@@ -28,11 +28,6 @@ public class LandValue {
         return Math.round(value / 10.0d) * 10.0d;
     }
 
-    public static void main(String[] args) {
-        LandValue landValueTable = new LandValue(20, 20);
-        System.out.println(landValueTable);
-    }
-
     // if subdivision is <= 6x6, use Andrew table
     private double[][] genAndrewTable() {
         double[][] values = new double[6][6];
